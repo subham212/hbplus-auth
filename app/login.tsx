@@ -38,7 +38,13 @@ export default function LoginScreen() {
 
           {isWide ? (
             <View style={styles.sectionDivider} accessible={false}>
+              {[0.08, 0.2, 0.4, 0.65, 0.85, 0.95].map((opacity, index) => (
+                <View key={`top-${index}`} style={[styles.sectionDividerFade, { opacity }]} />
+              ))}
               <View style={styles.sectionDividerAccent} />
+              {[0.95, 0.85, 0.65, 0.4, 0.2, 0.08].map((opacity, index) => (
+                <View key={`bottom-${index}`} style={[styles.sectionDividerFade, { opacity }]} />
+              ))}
             </View>
           ) : null}
 
@@ -97,8 +103,9 @@ const styles = StyleSheet.create({
   wideIntro: { flex: 1, maxWidth: 500, alignItems: 'center' },
   introCopy: { width: '100%', alignItems: 'center', marginTop: 30 },
   wideIntroCopy: { alignItems: 'center', marginTop: 40 },
-  sectionDivider: { width: 1, height: 180, flexShrink: 0, alignItems: 'center', justifyContent: 'center', backgroundColor: '#E5DED4' },
-  sectionDividerAccent: { width: 3, height: 32, borderRadius: Rounded.full, backgroundColor: Colors.primary },
+  sectionDivider: { width: 3, height: 240, flexShrink: 0, borderRadius: Rounded.full, overflow: 'hidden' },
+  sectionDividerFade: { height: 10, backgroundColor: Colors.primary },
+  sectionDividerAccent: { height: 120, backgroundColor: Colors.primary },
   heading: { width: '100%', maxWidth: 500, fontFamily: Fonts.serifBold, fontSize: 42, lineHeight: 50, letterSpacing: -0.35, color: Colors.onSurface, textAlign: 'center' },
   wideHeading: { fontSize: 51, lineHeight: 61, textAlign: 'center' },
   narrowHeading: { fontSize: 36, lineHeight: 43 },
