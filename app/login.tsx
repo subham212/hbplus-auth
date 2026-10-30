@@ -27,7 +27,6 @@ export default function LoginScreen() {
           <View style={[styles.intro, isWide && styles.wideIntro]}>
             <BrandLogo />
             <View style={[styles.introCopy, isWide && styles.wideIntroCopy]}>
-              <Text style={[styles.eyebrow, isWide && styles.wideEyebrow]}>MEMBER SIGN-IN</Text>
               <Text style={[styles.heading, isWide && styles.wideHeading, isNarrow && styles.narrowHeading, isTiny && styles.tinyHeading]} accessibilityRole="header">
                 Sign in to HB+ Fit.
               </Text>
@@ -92,9 +91,7 @@ const styles = StyleSheet.create({
   wideIntro: { flex: 1, maxWidth: 500, alignItems: 'flex-start' },
   introCopy: { width: '100%', alignItems: 'center', marginTop: 30 },
   wideIntroCopy: { alignItems: 'flex-start', marginTop: 50 },
-  eyebrow: { width: '100%', fontFamily: Fonts.sansBold, fontSize: 11, letterSpacing: 1.2, color: Colors.primary, textAlign: 'center' },
-  wideEyebrow: { textAlign: 'left' },
-  heading: { width: '100%', maxWidth: 500, marginTop: 14, fontFamily: Fonts.serifBold, fontSize: 42, lineHeight: 50, letterSpacing: -0.35, color: Colors.onSurface, textAlign: 'center' },
+  heading: { width: '100%', maxWidth: 500, fontFamily: Fonts.serifBold, fontSize: 42, lineHeight: 50, letterSpacing: -0.35, color: Colors.onSurface, textAlign: 'center' },
   wideHeading: { fontSize: 51, lineHeight: 61, textAlign: 'left' },
   narrowHeading: { fontSize: 36, lineHeight: 43 },
   tinyHeading: { fontSize: 32, lineHeight: 39 },

@@ -165,7 +165,7 @@ export default function AdminScreen() {
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: Colors.surface },
-  content: { flexGrow: 1, padding: Spacing.sm },
+  content: { flexGrow: 1, paddingHorizontal: Spacing.sm, paddingBottom: Spacing.sm },
   container: { width: '100%', maxWidth: 880, alignSelf: 'center', flex: 1 },
   header: { minHeight: 76, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: '#E5DED4', marginBottom: 20, gap: 12 },
   backButton: { minHeight: 44, alignSelf: 'flex-start', justifyContent: 'center', paddingHorizontal: 2, marginBottom: 16 },

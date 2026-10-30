@@ -68,16 +68,11 @@ export default function DashboardScreen() {
                   <Text style={styles.email} selectable>{profile?.email}</Text>
                   <View style={[styles.roleBadge, isAdmin && styles.adminBadge]}>
                     <Text style={[styles.roleText, isAdmin && styles.adminRoleText]}>
-                      {isAdmin ? 'Admin' : 'Member'}
+                      {isAdmin ? 'Admin' : 'User'}
                     </Text>
+                    <Text style={styles.verifiedMark} accessibilityLabel="Verified university account">✓</Text>
                   </View>
                 </View>
-              </View>
-
-              <View style={styles.rule} />
-              <View style={styles.accountStatus}>
-                <View style={styles.statusMark} />
-                <Text style={styles.statusText}>Verified university account</Text>
               </View>
 
               {isAdmin ? (
@@ -128,14 +123,11 @@ const styles = StyleSheet.create({
   profileDetails: { flex: 1, minWidth: 0 },
   profileName: { fontFamily: Fonts.sansSemiBold, fontSize: 17, lineHeight: 24, color: Colors.onSurface },
   email: { marginTop: 2, fontFamily: Fonts.sansRegular, fontSize: 14, lineHeight: 21, color: '#625B54' },
-  roleBadge: { alignSelf: 'flex-start', marginTop: 10, paddingVertical: 5, paddingHorizontal: 10, borderRadius: Rounded.full, backgroundColor: Colors.surface },
+  roleBadge: { alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 10, paddingVertical: 5, paddingHorizontal: 10, borderRadius: Rounded.full, backgroundColor: Colors.surface },
   adminBadge: { backgroundColor: '#F8EEE9' },
   roleText: { fontFamily: Fonts.sansMedium, fontSize: 11, color: '#5D554D' },
   adminRoleText: { color: Colors.primary },
-  rule: { height: 1, backgroundColor: '#EEEAE3', marginTop: 22, marginBottom: 16 },
-  accountStatus: { flexDirection: 'row', alignItems: 'center', gap: 9 },
-  statusMark: { width: 8, height: 8, borderRadius: Rounded.full, backgroundColor: Colors.primary },
-  statusText: { fontFamily: Fonts.sansRegular, fontSize: 13, lineHeight: 20, color: '#625B54' },
+  verifiedMark: { fontFamily: Fonts.sansMedium, fontSize: 11, lineHeight: 13, color: Colors.primary },
   adminLink: { minHeight: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 20, paddingHorizontal: 16, borderRadius: Rounded.md, borderWidth: 1, borderColor: '#D8C6BC', backgroundColor: Colors.neutral },
   adminLinkText: { fontFamily: Fonts.sansSemiBold, fontSize: 14, color: Colors.primary },
   adminLinkArrow: { fontSize: 18, color: Colors.primary },
