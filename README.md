@@ -141,7 +141,11 @@ The allowed domain is enforced by the app, Firestore rules, optional blocking-fu
    Copy-Item .env.example .env
    ```
 
-3. Put the Google **Web application client ID** in `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`. Put the iOS client ID in `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID` for iOS builds. These IDs are public app identifiers, not client secrets. Never put a Google client secret in this client application. `.env` is ignored by Git.
+3. Put the Firebase web API key in `EXPO_PUBLIC_FIREBASE_API_KEY`. Find it in Firebase Console → Project settings → General → Your apps → SDK setup and configuration. Put the Google **Web application client ID** in `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`. Put the iOS client ID in `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID` for iOS builds. These are public client configuration values, not secrets. Never put a Google OAuth client secret or Firebase service-account key in this client application. `.env` is ignored by Git.
+
+### Vercel environment variable
+
+For the deployed web app, add `EXPO_PUBLIC_FIREBASE_API_KEY` under Vercel → Project → Settings → Environment Variables. Use the **Config** type because Expo embeds this public value in the browser bundle. Set it for **Production** (and **Preview** if you use preview deployments), save it, then redeploy. Vercel applies changed variables to new deployments only. The `EXPO_PUBLIC_` prefix does not hide the value from users; Firebase API keys identify the Firebase project and must be protected with Firebase Security Rules and appropriate Google Cloud API/key restrictions, not treated as passwords.
 
 ### Firebase Console
 
