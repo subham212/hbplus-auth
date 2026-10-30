@@ -1,0 +1,14 @@
+{
+  "name": "hbplus-auth-functions",
+  "private": true,
+  "main": "index.js",
+  "engines": {
+    "node": "22"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "firebase-functions": "^7.4.0"
+  }
+}
