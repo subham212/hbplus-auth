@@ -1,143 +1,155 @@
-# HB+ Auth
+<div align="center">
+  <h1>HB+ Auth</h1>
+  <p><strong>One secure sign-in experience for web, Android, and iOS.</strong></p>
+  <p>
+    <a href="https://hbplus-auth.vercel.app/"><strong>Launch the live app ↗</strong></a>
+  </p>
+  <p>
+    <a href="https://hbplus-auth.vercel.app/"><img alt="Live on Vercel" src="https://img.shields.io/badge/Live%20App-Vercel-000000?logo=vercel&logoColor=white"></a>
+    <img alt="Expo SDK 58" src="https://img.shields.io/badge/Expo-SDK%2058-000020?logo=expo&logoColor=white">
+    <img alt="React Native 0.88" src="https://img.shields.io/badge/React%20Native-0.88-20232A?logo=react&logoColor=61DAFB">
+    <img alt="Firebase Authentication" src="https://img.shields.io/badge/Firebase-Authentication-FFCA28?logo=firebase&logoColor=111827">
+  </p>
+</div>
 
-HB+ Auth is a cross-platform sign-in app built with Expo, React Native, React Native for Web, and Firebase Authentication. It supports Google sign-in on the web, Android, and iOS, and is intended for verified accounts in the `hbplus.fit` email domain.
+HB+ Auth is a cross-platform application built with Expo, React Native, and React Native Web. It uses Google sign-in and Firebase Authentication, with access intended for verified **@hbplus.fit** accounts.
 
-## What it includes
+## ✦ What you get
 
-- Google sign-in using Firebase Authentication.
-- Web popup sign-in and native Google sign-in on Android and iOS.
-- A dashboard behind an authenticated route.
-- Session restoration on native devices using Firebase Auth persistence and AsyncStorage.
-- Client-side domain checks and Firebase Authentication blocking functions for server-side checks.
-- A responsive React Native interface.
+- **One codebase:** web, Android, and iOS.
+- **Google sign-in:** Firebase popup on web and native Google sign-in on mobile.
+- **Protected dashboard:** unauthenticated users are sent back to login.
+- **Persistent mobile sessions:** Firebase Auth restores sessions using AsyncStorage.
+- **Domain gate:** the app checks for a verified **@hbplus.fit** email.
+- **Responsive UI:** layouts adapt to browser and mobile screen sizes.
 
-## Project setup
+## 🔐 How access works
+
+1. The user continues with Google.
+2. The app signs in with Firebase Authentication.
+3. The app checks that the Google email is verified and ends in **@hbplus.fit**.
+4. The protected route shows the dashboard only to an eligible signed-in user.
+5. The user can sign out from the dashboard.
+
+Google receives **hbplus.fit** as a hosted-domain hint. That hint helps with account selection, but it does not enforce access by itself.
+
+### Server-side enforcement
+
+The repository includes Firebase Authentication blocking functions in **functions/**:
+
+- **restrictNewAccounts** checks new accounts.
+- **restrictSignIns** checks sign-ins before Firebase issues a token.
+
+Both require a verified email in the exact **hbplus.fit** domain. **Deploy and enable these functions before relying on Firebase itself to enforce the domain policy.** Blocking functions require Firebase Authentication with Identity Platform. Deploying Cloud Functions requires the Blaze plan and a linked billing account; usage may incur charges. See [Firebase blocking functions](https://firebase.google.com/docs/functions/auth-blocking-events) and [Firebase pricing](https://firebase.google.com/docs/projects/billing/firebase-pricing-plans).
+
+## 🚀 Live web app
+
+**[https://hbplus-auth.vercel.app/](https://hbplus-auth.vercel.app/)**
+
+The Vercel build is configured in **vercel.json** to run **npx expo export --platform web** and publish the **dist/** folder. After a deployment, add its hostname (for example, **hbplus-auth.vercel.app**) to Firebase Authentication's **Authorized domains**.
+
+## 🧰 Run it locally
 
 ### Requirements
 
-- Node.js and npm.
-- Access to the Firebase and Google Cloud project used by this app.
-- Android Studio and an Android SDK for local Android builds.
-- macOS and Xcode for local iOS builds. A cloud build service can be used when developing on Windows.
+- Node.js and npm
+- Access to the Firebase and Google Cloud project
+- Android Studio and Android SDK for local Android builds
+- macOS and Xcode for local iOS builds (or use a cloud build service)
 
-This checkout is configured for Firebase project `hbplus-auth-212` in `.firebaserc` and `config/firebaseApp.ts`. If you use a different Firebase project, update the project alias and Firebase configuration to match it.
+The project is configured for Firebase project **hbplus-auth-212** in **.firebaserc** and **config/firebaseApp.ts**. If you use another Firebase project, update both configurations to match.
 
-### Install and configure the app
-
-From the repository root:
-
-```powershell
-npm install
-Copy-Item .env.example .env
-```
-
-Open `.env` and replace the example values with the OAuth client IDs from the same Google Cloud project:
-
-```dotenv
-EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID=your-web-client-id.apps.googleusercontent.com
-EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID=your-ios-client-id.apps.googleusercontent.com
-```
-
-These are OAuth **client IDs**, which identify your app; they are not client secrets. Do not put a Google OAuth client secret in this app. Variables beginning with `EXPO_PUBLIC_` are included in the client app, and `.env` is ignored by Git.
-
-### Configure Google and Firebase
-
-In the Firebase Console for this project:
-
-1. Open **Authentication** and enable **Google** as a sign-in provider. Set the support email if Firebase asks for one.
-2. In Authentication settings, add `localhost` and your deployed website hostname to **Authorized domains**. Add only the hostname, without `https://` or a path.
-3. In Google Cloud Console, copy the **Web application** OAuth client ID into `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`.
-4. Register the iOS app with bundle ID `fit.hbplus.auth`, create or locate its **iOS** OAuth client ID, and put it in `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID`.
-5. Register the Android app with package name `fit.hbplus.auth` and add the SHA-1 fingerprint for the signing key you use. For local debug builds, get it with the Android Gradle `signingReport` task. Add the release signing fingerprint too before distributing a release build.
-
-The native Google sign-in setup uses the **Web** client ID to obtain a Firebase-compatible ID token. Do not put the Android OAuth client ID in the Web client ID variable. The iOS URL callback scheme is derived from the iOS client ID during Expo configuration, so rebuild the iOS app after changing that ID.
-
-For a local Android fingerprint, if the generated `android` directory does not exist yet, create it first:
-
-```powershell
-npx expo prebuild --platform android
-Set-Location android
-.\gradlew.bat signingReport
-```
-
-Copy the SHA-1 shown for the `debug` variant into the Android app settings in Firebase/Google Cloud. Return to the repository root afterward with `Set-Location ..`.
-
-### Start the app
+### Install
 
 Run these commands from the repository root:
 
-```powershell
+~~~powershell
+npm install
+Copy-Item .env.example .env
+~~~
+
+Add your Google OAuth **client IDs** to **.env**:
+
+~~~dotenv
+EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID=your-web-client-id.apps.googleusercontent.com
+EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID=your-ios-client-id.apps.googleusercontent.com
+~~~
+
+Client IDs identify your app; they are not secrets. Never place a Google OAuth client secret in this client-side project. **.env** is ignored by Git.
+
+### Google and Firebase setup
+
+In the Firebase Console for this project:
+
+1. Enable **Google** under **Authentication → Sign-in providers** and set a support email if requested.
+2. Add **localhost** and your deployed hostname under **Authentication → Settings → Authorized domains**. Enter only the hostname, without **https://** or a path.
+3. In the same Google Cloud project, use the **Web application** OAuth client ID for **EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID**.
+4. Register the iOS app with bundle ID **fit.hbplus.auth**. Put its **iOS** OAuth client ID in **EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID**.
+5. Register the Android app with package name **fit.hbplus.auth** and add the SHA-1 fingerprint for each signing key you use. Add the release key fingerprint before distributing a release build.
+
+The native Google sign-in SDK uses the **Web** client ID to get an ID token for Firebase. Do not use an Android client ID for the Web variable. The iOS callback scheme comes from the iOS client ID, so rebuild the iOS app after changing that ID.
+
+To find the Android debug SHA-1 in PowerShell (create the generated Android project first if needed):
+
+~~~powershell
+npx expo prebuild --platform android
+Set-Location android
+.\gradlew.bat signingReport
+~~~
+
+Copy the SHA-1 shown for **debug** into the Android app settings in Firebase/Google Cloud. Then return to the project root with **Set-Location ..**.
+
+### Start the app
+
+~~~powershell
 npm run web
-```
-
-```powershell
 npm run android
-```
-
-```powershell
 npm run ios
-```
+~~~
 
-The web command runs in a browser. Android requires a configured SDK and a connected device or emulator. Local iOS builds require macOS and Xcode. Native Google sign-in uses a native module, so test it in the app built by `npm run android` or `npm run ios`, not in Expo Go.
+Web runs in a browser. Android needs an emulator or connected device and a configured SDK. Local iOS builds need macOS and Xcode. Native Google sign-in requires a development build; Expo Go does not include this app's native Google sign-in module.
 
-For a static web build, run:
+To create the static web build locally:
 
-```powershell
+~~~powershell
 npx expo export --platform web
-```
+~~~
 
-The build output is `dist/`. The repository includes `vercel.json` for a Vercel deployment; after deployment, add the deployed hostname to Firebase Authentication's authorized domains.
+The output is written to **dist/**.
 
-## Authentication flow
+## ☁️ Deploy the domain policy
 
-1. The user selects **Continue with Google**.
-2. On web, Firebase opens Google's sign-in popup. On Android and iOS, the native Google sign-in SDK returns an ID token, which the app exchanges with Firebase Authentication.
-3. Firebase's auth-state listener restores or updates the signed-in session. Native session persistence is backed by AsyncStorage.
-4. The app requires a verified email ending in `@hbplus.fit`. A signed-in user who does not meet that check is signed out, and the protected route sends them to the login screen.
-5. The user can sign out from the dashboard.
+The source code is ready, but Firebase server-side enforcement only takes effect after you deploy and enable both blocking functions:
 
-The `hd`/hosted-domain setting sent to Google is only a sign-in hint. It can help Google show the expected account, but it is not an access-control check.
+1. Upgrade the Firebase project to **Firebase Authentication with Identity Platform**.
+2. Use the **Blaze** plan for Cloud Functions. It requires a linked billing account; review costs and set budget alerts before deploying.
+3. From the project root, install the Firebase CLI, sign in, install function dependencies, and deploy:
 
-## Domain restriction and server enforcement
-
-The app checks that the email address is verified and matches `@hbplus.fit`. The protected route repeats that check before showing the dashboard. These client checks improve the experience, but client code by itself cannot secure Firebase data or other backend resources.
-
-The `functions/` directory contains two Firebase Authentication blocking functions:
-
-- `restrictNewAccounts` checks a user before account creation.
-- `restrictSignIns` checks a user before Firebase issues a sign-in token.
-
-Both require a verified email whose domain is exactly `hbplus.fit` (case-insensitive). To make Firebase enforce this policy, the project owner must complete **all** of these setup steps:
-
-1. Upgrade the Firebase project to **Firebase Authentication with Identity Platform**. Firebase requires this for blocking functions.
-2. Use the **Blaze** pricing plan to deploy Cloud Functions. It requires a linked billing account; Cloud Functions usage can incur charges. Review Firebase pricing and configure budget alerts before deploying.
-3. From the repository root, install the Firebase CLI, sign in, install the function dependencies, and deploy:
-
-   ```powershell
+   ~~~powershell
    npm install --global firebase-tools
    firebase login
    npm install --prefix functions
    firebase deploy --only functions
-   ```
+   ~~~
 
-   The `.firebaserc` file selects `hbplus-auth-212` by default. Confirm that this is the project you intend to change before deploying.
-4. In Firebase Authentication's **Blocking functions** settings, enable the deployed functions for **before user created** (`restrictNewAccounts`) and **before user signed in** (`restrictSignIns`).
+   **.firebaserc** selects **hbplus-auth-212** by default. Confirm this is the project you intend to update.
+4. In Firebase Authentication's **Blocking functions** settings, enable **restrictNewAccounts** for **before user created** and **restrictSignIns** for **before user signed in**.
 
-Until those setup steps are complete, the client-side check can redirect or sign out a user in this app, but Firebase itself does not yet enforce the domain policy for every client or API. Any future Firebase database or API access must also have its own server-side authorization rules.
+Client checks protect the app's screens, but they cannot secure future database or API access on their own. Protect those resources with server-side authorization rules too.
 
-## Troubleshooting
+## 🩺 Quick fixes
 
-- **Web says the domain is not authorized:** add `localhost` or the deployed hostname under Firebase Authentication's **Authorized domains**.
-- **Google sign-in opens but fails:** confirm Google is enabled in Firebase Authentication and that the Web OAuth client ID belongs to the same Google Cloud project.
-- **Android cannot complete sign-in:** check that the Android package is exactly `fit.hbplus.auth` and that Firebase/Google Cloud has the SHA-1 for the key used to sign that build.
-- **iOS does not return to the app:** check the iOS OAuth client ID and rebuild after changing it so the callback URL scheme is included in the native app.
-- **A user is denied:** use a verified Google account ending in `@hbplus.fit`. The domain hint in Google's sign-in screen does not override this rule.
-- **Deploying the blocking functions fails:** confirm the selected Firebase project, Identity Platform setup, Blaze plan, Firebase CLI login, and required project permissions.
+| If you see this | Check this |
+| --- | --- |
+| “This domain is not authorized” | Add your current hostname under Firebase Authentication's **Authorized domains**. |
+| Google sign-in fails on web | Confirm Google is enabled in Firebase and the Web OAuth client belongs to the same Google Cloud project. |
+| Google sign-in fails on Android | Confirm package **fit.hbplus.auth** and the SHA-1 for that build's signing key. |
+| iOS does not return after Google sign-in | Check the iOS client ID and rebuild the app so its callback scheme is included. |
+| “Access restricted” | Use a verified Google account ending in **@hbplus.fit**. |
 
-## Useful references
+## 📚 References
 
 - [Expo documentation](https://docs.expo.dev/)
 - [Firebase Authentication](https://firebase.google.com/docs/auth)
 - [Firebase Authentication blocking functions](https://firebase.google.com/docs/functions/auth-blocking-events)
-- [Cloud Functions for Firebase setup and deployment](https://firebase.google.com/docs/functions/get-started)
-- [Firebase pricing plans](https://firebase.google.com/docs/projects/billing/firebase-pricing-plans)
+- [Cloud Functions setup and deployment](https://firebase.google.com/docs/functions/get-started)
