@@ -67,6 +67,25 @@ The app creates a new profile with `role: "user"`. On sign-in it syncs the name,
 | Change a role from the app | No | No | No | Not through the app; the owner manages roles in Firebase Console |
 | Read or write another Firestore collection | No | No | No | Yes, through trusted Console access |
 
+### Protected access flow
+
+```mermaid
+flowchart TD
+    Start[Open app or protected URL] --> Auth{Signed in with verified<br/>@cutm.ac.in email?}
+    Auth -- No --> Login[Show login page]
+    Auth -- Yes --> Profile{Firestore profile loaded?}
+    Profile -- Loading --> Wait[Show loading screen]
+    Profile -- Error --> Retry[Show profile error<br/>Retry or sign out]
+    Profile -- Ready --> Role{Saved role?}
+    Role -- user --> UserDash[Show dashboard]
+    Role -- admin --> AdminDash[Show dashboard and Admin link]
+    AdminDash --> Directory[Open team directory]
+    Directory --> Rules{Firestore rules allow<br/>Admin list request?}
+    Rules -- Yes --> ShowTeam[Show up to 25 profiles per page]
+    Rules -- No --> Denied[Firestore rejects data request]
+    UserDash -. Direct /admin URL .-> Redirect[Redirect to dashboard]
+```
+
 ## Technology stack
 
 | Layer | Technology | Use in this project |

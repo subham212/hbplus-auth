@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   intro: { width: '100%', alignItems: 'center' },
   wideIntro: { flex: 1, maxWidth: 500, alignItems: 'center' },
   introCopy: { width: '100%', alignItems: 'center', marginTop: 30 },
-  wideIntroCopy: { alignItems: 'center', marginTop: 50 },
+  wideIntroCopy: { alignItems: 'center', marginTop: 40 },
   heading: { width: '100%', maxWidth: 500, fontFamily: Fonts.serifBold, fontSize: 42, lineHeight: 50, letterSpacing: -0.35, color: Colors.onSurface, textAlign: 'center' },
   wideHeading: { fontSize: 51, lineHeight: 61, textAlign: 'center' },
   narrowHeading: { fontSize: 36, lineHeight: 43 },
