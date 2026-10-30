@@ -1,11 +1,11 @@
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import BrandLockup from './BrandLockup';
+import BrandLogo from './BrandLogo';
 import { Colors, Fonts } from '../constants/theme';
 
 export default function LoadingScreen({ message = 'Restoring your session…' }: { message?: string }) {
   return (
     <View style={styles.container}>
-      <BrandLockup compact />
+      <BrandLogo size={40} />
       <ActivityIndicator
         size="small"
         color={Colors.primary}

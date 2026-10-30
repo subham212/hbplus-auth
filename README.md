@@ -194,7 +194,7 @@ Firestore Standard has a no-cost quota on Spark. Keep usage within the current q
 | Cross-platform app | Expo SDK 58, React Native 0.88, React Native Web 0.21 | Shared Android, iOS, and browser UI |
 | Navigation | Expo Router | File-based login, dashboard, and Admin routes |
 | Language | TypeScript 6 with strict checking; JavaScript for small testable helpers | App implementation and shared access logic |
-| UI styling | React Native `StyleSheet`, Safe Area Context, DM Sans, Playfair Display | Responsive layout, safe-area spacing, and typography |
+| UI styling | React Native `StyleSheet`, Safe Area Context, original `Gilroy-Medium` and `The Seasons Bold` font files | Responsive layout, safe-area spacing, and original HB+ typography |
 | Google sign-in on web | Firebase JS SDK 13, `GoogleAuthProvider`, `signInWithPopup` | Google popup and account selection |
 | Google sign-in on mobile | `@react-native-google-signin/google-signin` 17 | Native Google account flow; credential is passed to Firebase Auth |
 | Authentication | Firebase Authentication | Google credentials, verified email, and session state |

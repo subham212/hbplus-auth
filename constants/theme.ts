@@ -15,18 +15,16 @@ export const Colors = {
   error: '#C0392B',
 } as const;
 
-// Font family names — these must match the keys used in useFonts()
+// Font family names — these match the original site's bundled font faces.
 export const Fonts = {
-  serifBold: 'PlayfairDisplay_700Bold',
-  sansMedium: 'DMSans_500Medium',
-  sansRegular: 'DMSans_400Regular',
-  sansSemiBold: 'DMSans_600SemiBold',
-  sansBold: 'DMSans_700Bold',
+  serifBold: 'TheSeasonsBold',
+  sansMedium: 'GilroyMedium',
+  sansRegular: 'GilroyMedium',
+  sansSemiBold: 'GilroyMedium',
+  sansBold: 'GilroyMedium',
 } as const;
 
-// Typography presets — maps to the HB+ design system
-// The Seasons Bold → Playfair Display 700 Bold
-// Gilroy-Medium   → DM Sans 500 Medium
+// Typography presets — matches the HB+ design system.
 export const Typography: Record<string, TextStyle> = {
   headlineDisplay: {
     fontFamily: Fonts.serifBold,

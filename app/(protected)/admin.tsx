@@ -10,7 +10,7 @@ import {
 import { Redirect, router } from 'expo-router';
 import type { QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import BrandLockup from '../../components/BrandLockup';
+import BrandLogo from '../../components/BrandLogo';
 import { Colors, Fonts, Rounded, Spacing } from '../../constants/theme';
 import { useAuth } from '../../contexts/AuthContext';
 import { getUserProfilePage, type UserProfile } from '../../services/userProfiles';
@@ -81,7 +81,7 @@ export default function AdminScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <BrandLockup compact caption="ADMINISTRATION" />
+            <BrandLogo size={40} />
             <Pressable
               onPress={signOut}
               disabled={isSigningOut}

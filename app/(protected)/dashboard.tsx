@@ -1,7 +1,7 @@
 import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import BrandLockup from '../../components/BrandLockup';
+import BrandLogo from '../../components/BrandLogo';
 import { useAuth } from '../../contexts/AuthContext';
 import { Colors, Fonts, Rounded, Spacing } from '../../constants/theme';
 
@@ -18,7 +18,7 @@ export default function DashboardScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.container}>
           <View style={styles.nav}>
-            <BrandLockup compact caption="MEMBER AREA" />
+            <BrandLogo size={40} />
             <Pressable
               onPress={signOut}
               disabled={isSigningOut}

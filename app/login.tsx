@@ -2,7 +2,7 @@ import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View, useWi
 import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import BrandLockup from '../components/BrandLockup';
+import BrandLogo from '../components/BrandLogo';
 import { useAuth } from '../contexts/AuthContext';
 import { Colors, Fonts, Rounded } from '../constants/theme';
 
@@ -25,7 +25,7 @@ export default function LoginScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
         <View style={[styles.shell, { width: shellWidth }, isWide && styles.wideShell]}>
           <View style={[styles.intro, isWide && styles.wideIntro]}>
-            <BrandLockup caption="" />
+            <BrandLogo />
             <View style={[styles.introCopy, isWide && styles.wideIntroCopy]}>
               <Text style={[styles.eyebrow, isWide && styles.wideEyebrow]}>MEMBER SIGN-IN</Text>
               <Text style={[styles.heading, isWide && styles.wideHeading, isNarrow && styles.narrowHeading, isTiny && styles.tinyHeading]} accessibilityRole="header">

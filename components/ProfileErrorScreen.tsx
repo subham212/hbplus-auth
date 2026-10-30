@@ -1,6 +1,6 @@
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import BrandLockup from './BrandLockup';
+import BrandLogo from './BrandLogo';
 import { Colors, Fonts, Rounded, Spacing } from '../constants/theme';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -19,7 +19,7 @@ export default function ProfileErrorScreen({
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.shell}>
-          <BrandLockup compact />
+          <BrandLogo size={40} />
           <View style={styles.card}>
             <Text style={styles.heading} accessibilityRole="header">Your account is unavailable</Text>
             <Text style={styles.message} accessibilityRole="alert" accessibilityLiveRegion="polite">
