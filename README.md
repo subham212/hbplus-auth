@@ -17,16 +17,12 @@ HB+ Auth is a cross-platform assessment project built with Expo, React Native, a
 ## Contents
 
 - [At a glance](#at-a-glance)
-- [Architecture](#architecture)
-- [Sign-in and authorization flows](#sign-in-and-authorization-flows)
 - [Profiles, roles, and permissions](#profiles-roles-and-permissions)
-- [Security boundaries](#security-boundaries)
 - [Technology stack](#technology-stack)
 - [Project structure](#project-structure)
 - [Set up Firebase and Google sign-in](#set-up-firebase-and-google-sign-in)
 - [Run the app](#run-the-app)
 - [Run the tests](#run-the-tests)
-- [Build and deploy](#build-and-deploy)
 - [Troubleshooting](#troubleshooting)
 
 ## At a glance
@@ -39,100 +35,6 @@ HB+ Auth is a cross-platform assessment project built with Expo, React Native, a
 | Database | Cloud Firestore Standard, `(default)` database |
 | Billing | Firebase Spark plan is enough while usage stays within its free quota |
 | Roles | `user` and `admin` |
-| Admin assignment | A trusted Firebase project owner changes the profile role in the Console |
-
-## Architecture
-
-```mermaid
-flowchart LR
-    subgraph Clients[Cross-platform app]
-        Web[Browser<br/>React Native Web]
-        Mobile[Android and iOS<br/>React Native]
-        State[AuthContext<br/>session and profile state]
-        Router[Expo Router<br/>protected screens]
-        Dashboard[Dashboard]
-        AdminPage[Admin team directory]
-    end
-
-    Google[Google account chooser]
-    Auth[Firebase Authentication]
-    Profiles[User profile service]
-    Rules[Firestore Security Rules<br/>domain, ownership, role]
-    Database[(Cloud Firestore<br/>users/{uid})]
-
-    Web -->|Google popup| Google
-    Mobile -->|Native Google Sign-In| Google
-    Google -->|Google credential| Auth
-    Auth -->|Auth state listener| State
-    State -->|eligible account| Profiles
-    Profiles -->|profile read or write| Rules
-    Rules --> Database
-    State --> Router
-    Router --> Dashboard
-    Router -->|role is admin| AdminPage
-    AdminPage -->|paged directory read| Rules
-```
-
-The account chooser is a convenience for choosing an account already available to Google in that browser or device. It does **not** grant access. The app and Firestore rules check the account after selection.
-
-## Sign-in and authorization flows
-
-### Sign-in
-
-```mermaid
-sequenceDiagram
-    actor Person
-    participant App as HB+ app
-    participant Google
-    participant Auth as Firebase Auth
-    participant State as AuthContext
-    participant Profile as Firestore profile service
-    participant Rules as Firestore Rules
-    participant DB as Firestore
-
-    Person->>App: Tap Continue with Google
-    App->>Google: Ask user to select an account
-    Google-->>App: Return selected Google credential
-    App->>Auth: Sign in with Google credential
-    Auth-->>State: Notify app of signed-in user
-    State->>State: Check verified email and @cutm.ac.in domain
-    alt Account is not eligible
-        State->>Auth: Sign out
-        State-->>Person: Show access restricted message
-    else Account is eligible
-        State->>Profile: Create or sync users/{uid}
-        Profile->>Rules: Send Firestore request with Firebase ID token
-        Rules->>Rules: Check verified email, domain, ownership, and role
-        Rules->>DB: Allow profile request
-        DB-->>Profile: Return saved profile
-        Profile-->>State: Return role and profile
-        State-->>App: Mark profile ready
-        App-->>Person: Show dashboard and role-based navigation
-    end
-```
-
-Web uses Firebase Auth's Google popup with `prompt=select_account`. Android and iOS use the native Google Sign-In SDK. The native and web sign-in implementations are in `services/googleSignIn.native.ts` and `services/googleSignIn.ts`.
-
-### Route and data access decisions
-
-```mermaid
-flowchart TD
-    Start[Open app or protected URL] --> Auth{Signed in with verified<br/>@cutm.ac.in email?}
-    Auth -- No --> Login[Show login page]
-    Auth -- Yes --> Profile{Firestore profile loaded?}
-    Profile -- Loading --> Wait[Show loading screen]
-    Profile -- Error --> Retry[Show profile error<br/>Retry or sign out]
-    Profile -- Ready --> Role{Saved role?}
-    Role -- user --> UserDash[Show dashboard]
-    Role -- admin --> AdminDash[Show dashboard and Admin link]
-    AdminDash --> Directory[Open team directory]
-    Directory --> Rules{Firestore rules allow<br/>Admin list request?}
-    Rules -- Yes --> ShowTeam[Show up to 25 profiles per page]
-    Rules -- No --> Denied[Firestore rejects data request]
-    UserDash -. Direct /admin URL .-> Redirect[Redirect to dashboard]
-```
-
-The route checks control what the app displays. Firestore rules are the actual data-access boundary: changing the URL or bypassing a screen does not grant permission to read team profiles.
 
 ## Profiles, roles, and permissions
 
@@ -164,28 +66,6 @@ The app creates a new profile with `role: "user"`. On sign-in it syncs the name,
 | Change own name, email, or photo fields | No | Yes | Yes | Yes, through trusted Console access |
 | Change a role from the app | No | No | No | Not through the app; the owner manages roles in Firebase Console |
 | Read or write another Firestore collection | No | No | No | Yes, through trusted Console access |
-
-To grant Admin access, the project owner first has the intended member sign in once. The owner then opens **Firestore → Data → users → that user's document** and changes only `role` from `user` to `admin`. Changing it back to `user` revokes app Admin access. There is intentionally no role-edit button in the app, so users cannot promote themselves.
-
-## Security boundaries
-
-`firestore.rules` is the server-enforced data policy:
-
-- A request needs a Firebase-authenticated user with `email_verified == true` and an `@cutm.ac.in` email during this temporary test period.
-- A User can read their own profile and update only their own profile fields.
-- The `uid`, `role`, and `createdAt` fields cannot be changed by a client. Clients cannot delete profile documents.
-- Only an Admin profile can read other user profiles or list the `users` collection.
-- All Firestore paths other than the explicitly allowed `users/{uid}` operations are denied.
-
-The domain check is also applied by the client before showing protected screens. The client check improves the sign-in experience; it is not a substitute for Firestore rules.
-
-### Spark-plan limitation
-
-This project does not deploy Firebase Authentication blocking functions because the assessment does not require Blaze. Firebase Authentication can therefore still issue a token to an account outside the allowed domain; the app signs that account out, and Firestore rules deny it access to stored data. If a future requirement says Firebase must reject an account **before issuing any token**, that is a separate Identity Platform/blocking-functions setup and requires a billing-enabled plan. The optional blocking-function source is in `functions/` and is not needed for the current Firestore protection.
-
-Because the temporary test rule is a domain rule, **every verified `@cutm.ac.in` account is eligible**, not only the developer's address. Switch back to `@hbplus.fit` when testing is finished.
-
-Firestore Standard has a no-cost quota on Spark. Keep usage within the current quota and use one default database; see [Firebase pricing](https://firebase.google.com/docs/firestore/pricing) for current limits. This assessment does not need a Blaze upgrade.
 
 ## Technology stack
 
@@ -322,26 +202,6 @@ npx expo export --platform web
 npx expo export --platform android
 npx expo export --platform ios
 ```
-
-## Build and deploy
-
-### Web
-
-`vercel.json` configures Vercel to run `npx expo export --platform web` and publish `dist/`. After deploying a hostname, add that hostname under Firebase Authentication's **Authorized domains**. The live assessment URL is [hbplus-auth.vercel.app](https://hbplus-auth.vercel.app/).
-
-### Mobile
-
-Build and install native development/production builds with the Expo native workflow. Google Sign-In requires the native module, correct package/bundle IDs, OAuth client IDs, and Android signing SHA-1 as described above.
-
-### Firebase rules
-
-Deploy rules separately from the web build with:
-
-```powershell
-firebase deploy --only firestore:rules --project hbplus-auth-212
-```
-
-The Firebase project owner should also remove `users/{uid}` in Firestore when manually deleting a Firebase Authentication user. There is no deployed Cloud Function to perform automatic profile cleanup in this Spark-plan assessment setup.
 
 ## Troubleshooting
 
