@@ -25,7 +25,7 @@ export default function LoginScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
         <View style={[styles.shell, { width: shellWidth }, isWide && styles.wideShell]}>
           <View style={[styles.intro, isWide && styles.wideIntro]}>
-              <BrandLogo />
+            <BrandLogo />
             <View style={[styles.introCopy, isWide && styles.wideIntroCopy]}>
               <Text style={[styles.heading, isWide && styles.wideHeading, isNarrow && styles.narrowHeading, isTiny && styles.tinyHeading]} accessibilityRole="header">
                 Sign in to HB+ Fit.
@@ -35,6 +35,12 @@ export default function LoginScreen() {
               </Text>
             </View>
           </View>
+
+          {isWide ? (
+            <View style={styles.sectionDivider} accessible={false}>
+              <View style={styles.sectionDividerAccent} />
+            </View>
+          ) : null}
 
           <View style={[styles.card, isNarrow && styles.narrowCard]}>
             <Pressable
@@ -86,11 +92,13 @@ const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: Colors.surface },
   scrollContent: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: 20, paddingVertical: 30 },
   shell: { alignSelf: 'center', gap: 30 },
-  wideShell: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 50 },
+  wideShell: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 32 },
   intro: { width: '100%', alignItems: 'center' },
   wideIntro: { flex: 1, maxWidth: 500, alignItems: 'center' },
   introCopy: { width: '100%', alignItems: 'center', marginTop: 30 },
   wideIntroCopy: { alignItems: 'center', marginTop: 40 },
+  sectionDivider: { width: 1, height: 180, flexShrink: 0, alignItems: 'center', justifyContent: 'center', backgroundColor: '#E5DED4' },
+  sectionDividerAccent: { width: 3, height: 32, borderRadius: Rounded.full, backgroundColor: Colors.primary },
   heading: { width: '100%', maxWidth: 500, fontFamily: Fonts.serifBold, fontSize: 42, lineHeight: 50, letterSpacing: -0.35, color: Colors.onSurface, textAlign: 'center' },
   wideHeading: { fontSize: 51, lineHeight: 61, textAlign: 'center' },
   narrowHeading: { fontSize: 36, lineHeight: 43 },
