@@ -1,11 +1,12 @@
 import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../contexts/AuthContext';
 import { Colors, Fonts, Rounded, Spacing } from '../../constants/theme';
 
 export default function DashboardScreen() {
-  const { user, error, isSigningOut, signOut } = useAuth();
-  const name = user?.displayName?.trim() || 'Team member';
+  const { profile, error, isSigningOut, signOut } = useAuth();
+  const name = profile?.displayName?.trim() || 'Team member';
   const initial = name.charAt(0).toUpperCase();
 
   return (
@@ -53,9 +54,9 @@ export default function DashboardScreen() {
             </Text>
 
             <View style={styles.profileCard}>
-              {user?.photoURL ? (
+              {profile?.photoURL ? (
                 <Image
-                  source={{ uri: user.photoURL }}
+                  source={{ uri: profile.photoURL }}
                   style={styles.avatar}
                   accessibilityLabel={`${name}'s profile picture`}
                 />
@@ -67,11 +68,24 @@ export default function DashboardScreen() {
 
               <View style={styles.profileDetails}>
                 <Text style={styles.profileName}>{name}</Text>
-                <Text style={styles.email}>{user?.email}</Text>
+                <Text style={styles.email}>{profile?.email}</Text>
                 <View style={styles.verifiedBadge}>
                   <View style={styles.verifiedDot} />
                   <Text style={styles.verifiedText}>Verified HB+ account</Text>
                 </View>
+                <Text style={styles.roleLabel}>
+                  Role: {profile?.role === 'admin' ? 'Admin' : 'User'}
+                </Text>
+                {profile?.role === 'admin' ? (
+                  <Pressable
+                    onPress={() => router.push('/admin')}
+                    style={styles.adminLink}
+                    accessibilityRole="button"
+                    accessibilityLabel="Open admin team directory"
+                  >
+                    <Text style={styles.adminLinkText}>Open team directory</Text>
+                  </Pressable>
+                ) : null}
               </View>
             </View>
 
@@ -272,6 +286,25 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.sansMedium,
     fontSize: 11,
     color: '#35663A',
+  },
+  roleLabel: {
+    fontFamily: Fonts.sansMedium,
+    fontSize: 12,
+    color: '#625B54',
+    marginTop: 10,
+  },
+  adminLink: {
+    minHeight: 42,
+    alignSelf: 'flex-start',
+    justifyContent: 'center',
+    marginTop: 8,
+    paddingHorizontal: 2,
+  },
+  adminLinkText: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 13,
+    color: Colors.primary,
+    textDecorationLine: 'underline',
   },
   errorBox: {
     padding: 14,

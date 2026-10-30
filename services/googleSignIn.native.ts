@@ -30,7 +30,6 @@ function configureGoogleSignIn() {
     GoogleSignin.configure({
       webClientId,
       ...(iosClientId ? { iosClientId } : {}),
-      hostedDomain: 'hbplus.fit',
     });
     configured = true;
   }

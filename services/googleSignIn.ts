@@ -9,7 +9,7 @@ export async function signInWithGooglePlatform(): Promise<UserCredential | null>
   const provider = new GoogleAuthProvider();
   provider.addScope('email');
   provider.addScope('profile');
-  provider.setCustomParameters({ hd: 'hbplus.fit' });
+  provider.setCustomParameters({ prompt: 'select_account' });
   return signInWithPopup(auth, provider);
 }
 

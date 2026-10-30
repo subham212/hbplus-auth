@@ -1,13 +1,24 @@
 import { Redirect, Slot } from 'expo-router';
 import { useAuth } from '../../contexts/AuthContext';
 import LoadingScreen from '../../components/LoadingScreen';
-import { isAllowedDomain } from '../../utils/domainCheck';
+import ProfileErrorScreen from '../../components/ProfileErrorScreen';
+import { getAuthRoute } from '../../utils/authAccess';
 
 export default function ProtectedLayout() {
-  const { user, status } = useAuth();
+  const { user, profile, status, profileStatus, profileError, retryProfile, signOut } = useAuth();
+  const destination = getAuthRoute(status, user, profileStatus, profile);
 
-  if (status === 'loading') return <LoadingScreen />;
-  if (!user || !user.emailVerified || !isAllowedDomain(user.email)) {
+  if (destination === 'loading') return <LoadingScreen />;
+  if (destination === 'profile-error') {
+    return (
+      <ProfileErrorScreen
+        message={profileError ?? 'Your saved profile could not be loaded.'}
+        onRetry={retryProfile}
+        onSignOut={signOut}
+      />
+    );
+  }
+  if (destination !== 'dashboard') {
     return <Redirect href="/login" />;
   }
 
