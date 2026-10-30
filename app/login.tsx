@@ -25,9 +25,7 @@ export default function LoginScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
         <View style={[styles.shell, { width: shellWidth }, isWide && styles.wideShell]}>
           <View style={[styles.intro, isWide && styles.wideIntro]}>
-            <View style={styles.logoWrap}>
               <BrandLogo />
-            </View>
             <View style={[styles.introCopy, isWide && styles.wideIntroCopy]}>
               <Text style={[styles.heading, isWide && styles.wideHeading, isNarrow && styles.narrowHeading, isTiny && styles.tinyHeading]} accessibilityRole="header">
                 Sign in to HB+ Fit.
@@ -90,16 +88,15 @@ const styles = StyleSheet.create({
   shell: { alignSelf: 'center', gap: 30 },
   wideShell: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 50 },
   intro: { width: '100%', alignItems: 'center' },
-  wideIntro: { flex: 1, maxWidth: 500, alignItems: 'flex-start' },
-  logoWrap: { alignSelf: 'center' },
+  wideIntro: { flex: 1, maxWidth: 500, alignItems: 'center' },
   introCopy: { width: '100%', alignItems: 'center', marginTop: 30 },
-  wideIntroCopy: { alignItems: 'flex-start', marginTop: 50 },
+  wideIntroCopy: { alignItems: 'center', marginTop: 50 },
   heading: { width: '100%', maxWidth: 500, fontFamily: Fonts.serifBold, fontSize: 42, lineHeight: 50, letterSpacing: -0.35, color: Colors.onSurface, textAlign: 'center' },
-  wideHeading: { fontSize: 51, lineHeight: 61, textAlign: 'left' },
+  wideHeading: { fontSize: 51, lineHeight: 61, textAlign: 'center' },
   narrowHeading: { fontSize: 36, lineHeight: 43 },
   tinyHeading: { fontSize: 32, lineHeight: 39 },
   introDescription: { width: '100%', maxWidth: 390, marginTop: 12, fontFamily: Fonts.sansRegular, fontSize: 16, lineHeight: 24, color: '#625B54', textAlign: 'center' },
-  wideIntroDescription: { textAlign: 'left' },
+  wideIntroDescription: { textAlign: 'center' },
   card: { width: '100%', maxWidth: 420, alignSelf: 'center', padding: 24, borderRadius: Rounded.lg, borderWidth: 1, borderColor: '#E5DED4', backgroundColor: Colors.neutral },
   narrowCard: { padding: 20 },
   button: { width: '100%', minHeight: 58, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, paddingHorizontal: 16, borderRadius: Rounded.md, borderWidth: 1, borderColor: '#D8C6BC', backgroundColor: Colors.neutral },
