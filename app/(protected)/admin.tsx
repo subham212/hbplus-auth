@@ -103,7 +103,6 @@ export default function AdminScreen() {
             <Text style={styles.backText}>← Account overview</Text>
           </Pressable>
 
-          <Text style={styles.eyebrow}>MEMBER ACCOUNTS</Text>
           <Text style={styles.heading} accessibilityRole="header">Team directory</Text>
           <Text style={styles.description}>
             Accounts currently registered for this preview.
@@ -172,7 +171,6 @@ const styles = StyleSheet.create({
   backText: { fontFamily: Fonts.sansSemiBold, fontSize: 14, color: Colors.primary },
   signOutButton: { minWidth: 84, minHeight: 42, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 14, borderRadius: Rounded.md, borderWidth: 1, borderColor: '#D8C6BC', backgroundColor: Colors.neutral },
   signOutText: { fontFamily: Fonts.sansSemiBold, fontSize: 13, color: Colors.primary },
-  eyebrow: { fontFamily: Fonts.sansBold, fontSize: 11, letterSpacing: 1.3, color: Colors.primary },
   heading: { fontFamily: Fonts.serifBold, fontSize: 35, lineHeight: 42, letterSpacing: -0.28, color: Colors.onSurface, marginTop: 8 },
   description: { fontFamily: Fonts.sansRegular, fontSize: 14, lineHeight: 22, color: '#66615B', marginTop: 6, marginBottom: 24 },
   list: { borderWidth: 1, borderColor: '#EAE5DC', borderRadius: Rounded.xl, backgroundColor: Colors.neutral, overflow: 'hidden' },

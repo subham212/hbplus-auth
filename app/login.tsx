@@ -25,7 +25,9 @@ export default function LoginScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
         <View style={[styles.shell, { width: shellWidth }, isWide && styles.wideShell]}>
           <View style={[styles.intro, isWide && styles.wideIntro]}>
-            <BrandLogo />
+            <View style={styles.logoWrap}>
+              <BrandLogo />
+            </View>
             <View style={[styles.introCopy, isWide && styles.wideIntroCopy]}>
               <Text style={[styles.heading, isWide && styles.wideHeading, isNarrow && styles.narrowHeading, isTiny && styles.tinyHeading]} accessibilityRole="header">
                 Sign in to HB+ Fit.
@@ -89,6 +91,7 @@ const styles = StyleSheet.create({
   wideShell: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 50 },
   intro: { width: '100%', alignItems: 'center' },
   wideIntro: { flex: 1, maxWidth: 500, alignItems: 'flex-start' },
+  logoWrap: { alignSelf: 'center' },
   introCopy: { width: '100%', alignItems: 'center', marginTop: 30 },
   wideIntroCopy: { alignItems: 'flex-start', marginTop: 50 },
   heading: { width: '100%', maxWidth: 500, fontFamily: Fonts.serifBold, fontSize: 42, lineHeight: 50, letterSpacing: -0.35, color: Colors.onSurface, textAlign: 'center' },
