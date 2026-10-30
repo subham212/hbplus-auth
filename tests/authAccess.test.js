@@ -7,19 +7,19 @@ const {
 } = require('../utils/authAccess');
 const { isAllowedUser } = require('../functions/domainPolicy');
 
-const allowedUser = { email: 'person@cutm.ac.in', emailVerified: true };
+const allowedUser = { email: 'person@hbplus.fit', emailVerified: true };
 
 test('allows only verified users on the exact approved domain', () => {
   const cases = [
     [allowedUser, true],
-    [{ email: 'Person@CUTM.AC.IN', emailVerified: true }, true],
-    [{ email: ' person@cutm.ac.in ', emailVerified: true }, true],
+    [{ email: 'Person@HBPLUS.FIT', emailVerified: true }, true],
+    [{ email: ' person@hbplus.fit ', emailVerified: true }, true],
     [{ email: 'person@gmail.com', emailVerified: true }, false],
-    [{ email: 'person@evil-cutm.ac.in', emailVerified: true }, false],
-    [{ email: 'person@cutm.ac.in.evil.com', emailVerified: true }, false],
-    [{ email: 'person@cutm.ac.in@evil.com', emailVerified: true }, false],
-    [{ email: 'person@cutm.ac.in', emailVerified: false }, false],
-    [{ email: 'person@cutm.ac.in', emailVerified: 'true' }, false],
+    [{ email: 'person@evil-hbplus.fit', emailVerified: true }, false],
+    [{ email: 'person@hbplus.fit.evil.com', emailVerified: true }, false],
+    [{ email: 'person@hbplus.fit@evil.com', emailVerified: true }, false],
+    [{ email: 'person@hbplus.fit', emailVerified: false }, false],
+    [{ email: 'person@hbplus.fit', emailVerified: 'true' }, false],
     [null, false],
     [undefined, false],
   ];
@@ -32,13 +32,13 @@ test('allows only verified users on the exact approved domain', () => {
 test('client and blocking-function domain policies stay in sync', () => {
   const cases = [
     allowedUser,
-    { email: 'Person@CUTM.AC.IN', emailVerified: true },
-    { email: ' person@cutm.ac.in ', emailVerified: true },
+    { email: 'Person@HBPLUS.FIT', emailVerified: true },
+    { email: ' person@hbplus.fit ', emailVerified: true },
     { email: 'person@gmail.com', emailVerified: true },
-    { email: 'person@evil-cutm.ac.in', emailVerified: true },
-    { email: 'person@cutm.ac.in.evil.com', emailVerified: true },
-    { email: 'person@cutm.ac.in@evil.com', emailVerified: true },
-    { email: 'person@cutm.ac.in', emailVerified: false },
+    { email: 'person@evil-hbplus.fit', emailVerified: true },
+    { email: 'person@hbplus.fit.evil.com', emailVerified: true },
+    { email: 'person@hbplus.fit@evil.com', emailVerified: true },
+    { email: 'person@hbplus.fit', emailVerified: false },
     null,
   ];
 
@@ -63,7 +63,7 @@ test('protected routes wait for auth and profile restoration', () => {
     'login',
   );
   assert.equal(
-    getAuthRoute('authenticated', { email: 'person@cutm.ac.in', emailVerified: false }, 'ready', { role: 'user' }),
+    getAuthRoute('authenticated', { email: 'person@hbplus.fit', emailVerified: false }, 'ready', { role: 'user' }),
     'login',
   );
   assert.equal(getAuthRoute('authenticated', null), 'login');

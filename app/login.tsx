@@ -78,7 +78,7 @@ export default function LoginScreen() {
             <View style={styles.accessNote}>
               <View style={styles.noteRule} />
               <Text style={styles.noteText}>
-                Preview access is limited to verified @cutm.ac.in accounts.
+                Access is limited to verified @hbplus.fit accounts.
               </Text>
             </View>
           </View>

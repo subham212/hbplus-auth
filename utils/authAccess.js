@@ -10,7 +10,7 @@ function isAllowedAuthenticatedUser(user) {
   return (
     user?.emailVerified === true &&
     typeof user.email === 'string' &&
-    /^[^@\s]+@cutm\.ac\.in$/i.test(user.email.trim())
+    /^[^@\s]+@hbplus\.fit$/i.test(user.email.trim())
   );
 }
 

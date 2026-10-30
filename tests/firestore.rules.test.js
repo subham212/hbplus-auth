@@ -21,7 +21,7 @@ const {
 } = require('firebase/firestore');
 
 const PROJECT_ID = 'demo-hbplus-auth';
-const EMAIL = 'member@cutm.ac.in';
+const EMAIL = 'member@hbplus.fit';
 let environment;
 
 function allowedContext(uid = 'member', email = EMAIL, emailVerified = true) {
@@ -65,23 +65,23 @@ test('verified team members can create and read only their own user profile', as
   await assertSucceeds(setDoc(doc(db, 'users/member'), profileData('member')));
   await assertSucceeds(getDoc(doc(db, 'users/member')));
 
-  const uppercaseDomain = allowedContext('uppercase', 'Person@CUTM.AC.IN');
+  const uppercaseDomain = allowedContext('uppercase', 'Person@HBPLUS.FIT');
   await assertSucceeds(
-    setDoc(doc(uppercaseDomain, 'users/uppercase'), profileData('uppercase', 'Person@CUTM.AC.IN')),
+    setDoc(doc(uppercaseDomain, 'users/uppercase'), profileData('uppercase', 'Person@HBPLUS.FIT')),
   );
 });
 
 test('anonymous, unverified, external, and lookalike accounts cannot access profiles', async () => {
   const anonymous = environment.unauthenticatedContext().firestore();
-  const unverified = allowedContext('unverified', 'unverified@cutm.ac.in', false);
+  const unverified = allowedContext('unverified', 'unverified@hbplus.fit', false);
   const external = allowedContext('external', 'person@gmail.com');
-  const lookalike = allowedContext('lookalike', 'person@evil-cutm.ac.in');
+  const lookalike = allowedContext('lookalike', 'person@evil-hbplus.fit');
 
   await assertFails(getDoc(doc(anonymous, 'users/member')));
   await assertFails(setDoc(doc(anonymous, 'users/anonymous'), profileData('anonymous')));
-  await assertFails(setDoc(doc(unverified, 'users/unverified'), profileData('unverified', 'unverified@cutm.ac.in')));
+  await assertFails(setDoc(doc(unverified, 'users/unverified'), profileData('unverified', 'unverified@hbplus.fit')));
   await assertFails(setDoc(doc(external, 'users/external'), profileData('external', 'person@gmail.com')));
-  await assertFails(setDoc(doc(lookalike, 'users/lookalike'), profileData('lookalike', 'person@evil-cutm.ac.in')));
+  await assertFails(setDoc(doc(lookalike, 'users/lookalike'), profileData('lookalike', 'person@evil-hbplus.fit')));
 });
 
 test('users cannot create or promote an admin profile', async () => {
@@ -104,12 +104,12 @@ test('users can update profile fields but cannot change identity, role, or creat
 
 test('users cannot read other profiles, list users, or access other collections', async () => {
   await environment.withSecurityRulesDisabled(async (context) => {
-    await setDoc(doc(context.firestore(), 'users/other'), profileData('other', 'other@cutm.ac.in'));
+    await setDoc(doc(context.firestore(), 'users/other'), profileData('other', 'other@hbplus.fit'));
   });
   const db = allowedContext();
 
   await assertFails(getDoc(doc(db, 'users/other')));
-  await assertFails(setDoc(doc(db, 'users/other'), profileData('other', 'other@cutm.ac.in')));
+  await assertFails(setDoc(doc(db, 'users/other'), profileData('other', 'other@hbplus.fit')));
   await assertFails(getDocs(query(collection(db, 'users'), orderBy('createdAt'))));
   await assertFails(setDoc(doc(db, 'private/record'), { value: true }));
 });
@@ -118,7 +118,7 @@ test('a trusted admin can read and page through the team directory', async () =>
   await environment.withSecurityRulesDisabled(async (context) => {
     const adminDb = context.firestore();
     await setDoc(doc(adminDb, 'users/admin'), {
-      uid: 'admin', email: 'admin@cutm.ac.in', displayName: 'Admin', photoURL: null,
+      uid: 'admin', email: 'admin@hbplus.fit', displayName: 'Admin', photoURL: null,
       role: 'admin', createdAt: new Date(), updatedAt: new Date(),
     });
     await setDoc(doc(adminDb, 'users/member'), {
@@ -126,7 +126,7 @@ test('a trusted admin can read and page through the team directory', async () =>
       role: 'user', createdAt: new Date(), updatedAt: new Date(),
     });
   });
-  const db = allowedContext('admin', 'admin@cutm.ac.in');
+  const db = allowedContext('admin', 'admin@hbplus.fit');
 
   await assertSucceeds(getDoc(doc(db, 'users/member')));
   const directory = await assertSucceeds(
@@ -138,11 +138,11 @@ test('a trusted admin can read and page through the team directory', async () =>
 test('admin privileges do not allow writes to user profiles or other collections', async () => {
   await environment.withSecurityRulesDisabled(async (context) => {
     await setDoc(doc(context.firestore(), 'users/admin'), {
-      uid: 'admin', email: 'admin@cutm.ac.in', displayName: 'Admin', photoURL: null,
+      uid: 'admin', email: 'admin@hbplus.fit', displayName: 'Admin', photoURL: null,
       role: 'admin', createdAt: new Date(), updatedAt: new Date(),
     });
   });
-  const db = allowedContext('admin', 'admin@cutm.ac.in');
+  const db = allowedContext('admin', 'admin@hbplus.fit');
 
   await assertFails(updateDoc(doc(db, 'users/admin'), { role: 'user', updatedAt: serverTimestamp() }));
   await assertFails(setDoc(doc(db, 'private/record'), { value: true }));

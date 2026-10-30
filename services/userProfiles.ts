@@ -58,7 +58,7 @@ function profileFromData(data: DocumentData, expectedUid: string): UserProfile {
 
 function authProfile(user: User) {
   if (!isAllowedAuthenticatedUser(user) || !user.email) {
-    throw new Error('Only verified @cutm.ac.in users can create a profile.');
+    throw new Error('Only verified @hbplus.fit users can create a profile.');
   }
 
   return {
