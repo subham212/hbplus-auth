@@ -31,7 +31,7 @@ export default function LoginScreen() {
                 Sign in to HB+ Fit.
               </Text>
               <Text style={[styles.introDescription, isWide && styles.wideIntroDescription]}>
-                Use your verified university Google account.
+                Use your verified @hbplus.fit Google account.
               </Text>
             </View>
           </View>
