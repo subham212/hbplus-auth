@@ -29,20 +29,15 @@ export default function LoginScreen() {
             <View style={[styles.introCopy, isWide && styles.wideIntroCopy]}>
               <Text style={[styles.eyebrow, isWide && styles.wideEyebrow]}>MEMBER SIGN-IN</Text>
               <Text style={[styles.heading, isWide && styles.wideHeading, isNarrow && styles.narrowHeading, isTiny && styles.tinyHeading]} accessibilityRole="header">
-                Wellbeing, with thoughtful support.
+                Sign in to HB+ Fit.
               </Text>
               <Text style={[styles.introDescription, isWide && styles.wideIntroDescription]}>
-                Sign in to continue to your HB+ Fit account.
+                Use your verified university Google account.
               </Text>
             </View>
           </View>
 
           <View style={[styles.card, isNarrow && styles.narrowCard]}>
-            <Text style={styles.cardHeading} accessibilityRole="header">Sign in</Text>
-            <Text style={styles.cardDescription}>
-              Continue with your verified university Google account.
-            </Text>
-
             <Pressable
               style={({ pressed }) => [
                 styles.button,
@@ -105,10 +100,8 @@ const styles = StyleSheet.create({
   tinyHeading: { fontSize: 32, lineHeight: 39 },
   introDescription: { width: '100%', maxWidth: 390, marginTop: 12, fontFamily: Fonts.sansRegular, fontSize: 16, lineHeight: 24, color: '#625B54', textAlign: 'center' },
   wideIntroDescription: { textAlign: 'left' },
-  card: { width: '100%', maxWidth: 420, alignSelf: 'center', padding: 30, borderRadius: Rounded.lg, borderWidth: 1, borderColor: '#E5DED4', backgroundColor: Colors.neutral },
+  card: { width: '100%', maxWidth: 420, alignSelf: 'center', padding: 24, borderRadius: Rounded.lg, borderWidth: 1, borderColor: '#E5DED4', backgroundColor: Colors.neutral },
   narrowCard: { padding: 20 },
-  cardHeading: { fontFamily: Fonts.sansMedium, fontSize: 24, lineHeight: 39, color: Colors.onSurface },
-  cardDescription: { marginTop: 7, marginBottom: 20, fontFamily: Fonts.sansRegular, fontSize: 14, lineHeight: 21, color: '#625B54' },
   button: { width: '100%', minHeight: 58, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, paddingHorizontal: 16, borderRadius: Rounded.md, borderWidth: 1, borderColor: '#D8C6BC', backgroundColor: Colors.neutral },
   buttonPressed: { backgroundColor: '#F8F1ED' },
   buttonBusy: { backgroundColor: '#FAF8F5' },
