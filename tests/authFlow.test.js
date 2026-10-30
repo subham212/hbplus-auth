@@ -6,7 +6,7 @@ const {
   performGoogleSignOut,
 } = require('../services/authFlow');
 
-const allowedUser = { email: 'person@hbplus.fit', emailVerified: true };
+const allowedUser = { email: 'person@cutm.ac.in', emailVerified: true };
 
 test('successful sign-in returns the allowed user without signing out', async () => {
   const calls = [];

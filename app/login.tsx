@@ -41,7 +41,7 @@ export default function LoginScreen() {
               Welcome to your workspace.
             </Text>
             <Text style={styles.description}>
-              Sign in with your HB+ work account to continue securely.
+              Sign in with your CUTM university account to continue securely.
             </Text>
 
             <Pressable
@@ -84,7 +84,7 @@ export default function LoginScreen() {
 
             <View style={styles.divider} />
             <Text style={styles.cardFootnote}>
-              Access is limited to verified @hbplus.fit accounts.
+              Access is limited to verified @cutm.ac.in accounts.
             </Text>
           </View>
 

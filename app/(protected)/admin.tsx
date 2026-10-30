@@ -103,7 +103,7 @@ export default function AdminScreen() {
           <Text style={styles.eyebrow}>ADMINISTRATION</Text>
           <Text style={styles.heading} accessibilityRole="header">Team directory</Text>
           <Text style={styles.description}>
-            View the saved profiles for verified HB+ team members.
+            View the saved profiles for verified CUTM users.
           </Text>
           {authError ? <Text style={styles.inlineError} accessibilityRole="alert">{authError}</Text> : null}
 

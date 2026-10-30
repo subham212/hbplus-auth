@@ -50,7 +50,7 @@ export default function DashboardScreen() {
               Welcome back, {name}.
             </Text>
             <Text style={styles.description}>
-              You’re signed in with your official HB+ account.
+              You’re signed in with your verified CUTM account.
             </Text>
 
             <View style={styles.profileCard}>
@@ -71,7 +71,7 @@ export default function DashboardScreen() {
                 <Text style={styles.email}>{profile?.email}</Text>
                 <View style={styles.verifiedBadge}>
                   <View style={styles.verifiedDot} />
-                  <Text style={styles.verifiedText}>Verified HB+ account</Text>
+                  <Text style={styles.verifiedText}>Verified CUTM account</Text>
                 </View>
                 <Text style={styles.roleLabel}>
                   Role: {profile?.role === 'admin' ? 'Admin' : 'User'}

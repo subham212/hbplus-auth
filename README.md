@@ -10,7 +10,9 @@
   </p>
 </div>
 
-HB+ Auth is a cross-platform assessment project built with Expo, React Native, and React Native Web. Team members sign in with Google. The app allows verified **@hbplus.fit** accounts into its dashboard and gives users an Admin or User role. Firestore Security Rules protect stored profile data independently of the app screens.
+HB+ Auth is a cross-platform assessment project built with Expo, React Native, and React Native Web. Users sign in with Google. The app currently allows verified **@cutm.ac.in** accounts into its dashboard and gives users an Admin or User role. Firestore Security Rules protect stored profile data independently of the app screens.
+
+> **Temporary test setting:** `@cutm.ac.in` is enabled so the developer can test with a university account. Before submitting the assessment, restore the intended `@hbplus.fit` domain in the app, Firestore rules, optional blocking-function policy, tests, and this README, then redeploy the Firestore rules. The temporary domain allows any verified account at that domain, not only one person.
 
 ## Contents
 
@@ -32,7 +34,7 @@ HB+ Auth is a cross-platform assessment project built with Expo, React Native, a
 | Item | Value |
 | --- | --- |
 | Firebase project | `hbplus-auth-212` |
-| Allowed account | Verified email ending in `@hbplus.fit` |
+| Current test account | Verified email ending in `@cutm.ac.in` (temporary; restore `@hbplus.fit` before assessment submission) |
 | Web hosting | [hbplus-auth.vercel.app](https://hbplus-auth.vercel.app/) |
 | Database | Cloud Firestore Standard, `(default)` database |
 | Billing | Firebase Spark plan is enough while usage stays within its free quota |
@@ -93,7 +95,7 @@ sequenceDiagram
     Google-->>App: Return selected Google credential
     App->>Auth: Sign in with Google credential
     Auth-->>State: Notify app of signed-in user
-    State->>State: Check verified email and @hbplus.fit domain
+    State->>State: Check verified email and @cutm.ac.in domain
     alt Account is not eligible
         State->>Auth: Sign out
         State-->>Person: Show access restricted message
@@ -115,7 +117,7 @@ Web uses Firebase Auth's Google popup with `prompt=select_account`. Android and 
 
 ```mermaid
 flowchart TD
-    Start[Open app or protected URL] --> Auth{Signed in with verified<br/>@hbplus.fit email?}
+    Start[Open app or protected URL] --> Auth{Signed in with verified<br/>@cutm.ac.in email?}
     Auth -- No --> Login[Show login page]
     Auth -- Yes --> Profile{Firestore profile loaded?}
     Profile -- Loading --> Wait[Show loading screen]
@@ -150,7 +152,7 @@ users/
     └── updatedAt: timestamp
 ```
 
-The app creates a new profile with `role: "user"`. On sign-in it syncs the name, email, and photo URL from Firebase Authentication without changing the saved role. The Admin directory fetches 25 records at a time instead of loading the whole collection at once.
+The app creates a new profile with `role: "user"`. On sign-in it syncs the name, email, and photo URL from Firebase Authentication without changing the saved role. The Admin directory fetches 25 records at a time instead of loading the whole collection at once. During temporary testing, use a verified `@cutm.ac.in` account.
 
 ### Who can do what
 
@@ -169,7 +171,7 @@ To grant Admin access, the project owner first has the intended member sign in o
 
 `firestore.rules` is the server-enforced data policy:
 
-- A request needs a Firebase-authenticated user with `email_verified == true` and an `@hbplus.fit` email.
+- A request needs a Firebase-authenticated user with `email_verified == true` and an `@cutm.ac.in` email during this temporary test period.
 - A User can read their own profile and update only their own profile fields.
 - The `uid`, `role`, and `createdAt` fields cannot be changed by a client. Clients cannot delete profile documents.
 - Only an Admin profile can read other user profiles or list the `users` collection.
@@ -180,6 +182,8 @@ The domain check is also applied by the client before showing protected screens.
 ### Spark-plan limitation
 
 This project does not deploy Firebase Authentication blocking functions because the assessment does not require Blaze. Firebase Authentication can therefore still issue a token to an account outside the allowed domain; the app signs that account out, and Firestore rules deny it access to stored data. If a future requirement says Firebase must reject an account **before issuing any token**, that is a separate Identity Platform/blocking-functions setup and requires a billing-enabled plan. The optional blocking-function source is in `functions/` and is not needed for the current Firestore protection.
+
+Because the temporary test rule is a domain rule, **every verified `@cutm.ac.in` account is eligible**, not only the developer's address. Switch back to `@hbplus.fit` when testing is finished.
 
 Firestore Standard has a no-cost quota on Spark. Keep usage within the current quota and use one default database; see [Firebase pricing](https://firebase.google.com/docs/firestore/pricing) for current limits. This assessment does not need a Blaze upgrade.
 
@@ -226,7 +230,7 @@ tests/                          Unit and Firestore Emulator rules tests
 firebase.json                  Firestore rules and local emulator configuration
 ```
 
-The allowed domain is intentionally repeated at the app and database trust boundaries. If it ever changes, update `utils/authAccess.js`, `firestore.rules`, and the optional `functions/domainPolicy.js`, then update and run the tests.
+The allowed domain is intentionally repeated at the app and database trust boundaries. For the temporary CUTM test setting, it is `cutm.ac.in` in `utils/authAccess.js`, `firestore.rules`, the optional `functions/domainPolicy.js`, and the tests. Restore `hbplus.fit` in those files before assessment submission, update this README, and redeploy the rules.
 
 ## Set up Firebase and Google sign-in
 
@@ -284,7 +288,7 @@ npm run ios
 
 `npm run web` starts Expo's browser app; open the local URL printed in the terminal. Android requires Android Studio, Android SDK, and an emulator or connected device. Local iOS builds require macOS and Xcode. The native Google sign-in module requires a development build; Expo Go does not include it.
 
-The configured app uses Firebase project `hbplus-auth-212`, including when it runs on your computer. Signing in with an eligible account creates/updates that account's profile in that Firestore database. A personal Gmail account can be used to check that the app rejects an outside-domain login, but it cannot reach the dashboard.
+The configured app uses Firebase project `hbplus-auth-212`, including when it runs on your computer. Signing in with an eligible account creates/updates that account's profile in that Firestore database. During this temporary test setting, a verified `@cutm.ac.in` account can reach the dashboard; a personal Gmail account should be rejected.
 
 To create the static web output locally:
 
@@ -344,7 +348,7 @@ The Firebase project owner should also remove `users/{uid}` in Firestore when ma
 | What you see | What to check |
 | --- | --- |
 | Google asks for an email instead of showing accounts | Google shows accounts already available in the current browser/device. Sign in to those Google accounts in that browser first; the app requests account selection but cannot display accounts Google does not know about. |
-| “Access restricted” after choosing Gmail | Expected. Only verified `@hbplus.fit` accounts can use the app. |
+| “Access restricted” after choosing Gmail | Expected. Only verified `@cutm.ac.in` accounts are allowed during temporary testing. Restore `@hbplus.fit` before assessment submission. |
 | “This domain is not authorized” | Add the current hostname (for local web, `localhost`) under Firebase Authentication → Settings → Authorized domains. |
 | Google sign-in fails on web | Check that Google is enabled, the Web OAuth client ID belongs to this Firebase/Google project, and the local `.env` values are correct. Restart Expo after changing `.env`. |
 | Google sign-in fails on Android | Check package `fit.hbplus.auth`, Google Play Services, the Web OAuth client ID, and the SHA-1 for the installed build's signing key. |
