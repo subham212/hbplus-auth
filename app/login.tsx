@@ -94,6 +94,8 @@ export default function LoginScreen() {
   );
 }
 
+const dividerColor = '#A4472B';
+
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: Colors.surface },
   scrollContent: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: 20, paddingVertical: 30 },
@@ -104,8 +106,8 @@ const styles = StyleSheet.create({
   introCopy: { width: '100%', alignItems: 'center', marginTop: 30 },
   wideIntroCopy: { alignItems: 'center', marginTop: 40 },
   sectionDivider: { width: 3, height: 240, flexShrink: 0, borderRadius: Rounded.full, overflow: 'hidden' },
-  sectionDividerFade: { height: 10, backgroundColor: Colors.primary },
-  sectionDividerAccent: { height: 120, backgroundColor: Colors.primary },
+  sectionDividerFade: { height: 10, backgroundColor: dividerColor },
+  sectionDividerAccent: { height: 120, backgroundColor: dividerColor },
   heading: { width: '100%', maxWidth: 500, fontFamily: Fonts.serifBold, fontSize: 42, lineHeight: 50, letterSpacing: -0.35, color: Colors.onSurface, textAlign: 'center' },
   wideHeading: { fontSize: 51, lineHeight: 61, textAlign: 'center' },
   narrowHeading: { fontSize: 36, lineHeight: 43 },
