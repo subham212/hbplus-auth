@@ -1,36 +1,31 @@
-import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import BrandLockup from '../../components/BrandLockup';
 import { useAuth } from '../../contexts/AuthContext';
 import { Colors, Fonts, Rounded, Spacing } from '../../constants/theme';
 
 export default function DashboardScreen() {
+  const { width } = useWindowDimensions();
+  const isNarrow = width < 420;
   const { profile, error, isSigningOut, signOut } = useAuth();
   const name = profile?.displayName?.trim() || 'Team member';
   const initial = name.charAt(0).toUpperCase();
+  const isAdmin = profile?.role === 'admin';
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.container}>
           <View style={styles.nav}>
-            <View style={styles.brandRow}>
-              <View style={styles.brandMark}>
-                <Text style={styles.brandMarkText}>HB+</Text>
-              </View>
-              <View>
-                <Text style={styles.brandName}>HB+ WORKSPACE</Text>
-                <Text style={styles.brandCaption}>TEAM ACCESS</Text>
-              </View>
-            </View>
-
+            <BrandLockup compact caption="MEMBER AREA" />
             <Pressable
               onPress={signOut}
               disabled={isSigningOut}
               style={({ pressed }) => [
-                styles.logoutButton,
-                pressed && !isSigningOut && styles.logoutPressed,
-                isSigningOut && styles.logoutBusy,
+                styles.signOutButton,
+                pressed && !isSigningOut && styles.signOutPressed,
+                isSigningOut && styles.signOutBusy,
               ]}
               accessibilityRole="button"
               accessibilityLabel={isSigningOut ? 'Signing out' : 'Sign out'}
@@ -39,68 +34,71 @@ export default function DashboardScreen() {
               {isSigningOut ? (
                 <ActivityIndicator size="small" color={Colors.primary} />
               ) : (
-                <Text style={styles.logoutText}>Sign out</Text>
+                <Text style={styles.signOutText}>Sign out</Text>
               )}
             </Pressable>
           </View>
 
           <View style={styles.main}>
-            <Text style={styles.eyebrow}>YOUR TEAM SPACE</Text>
-            <Text style={styles.heading} accessibilityRole="header">
-              Welcome back, {name}.
+            <Text style={styles.eyebrow}>ACCOUNT DETAILS</Text>
+            <Text style={[styles.heading, isNarrow && styles.narrowHeading]} accessibilityRole="header">
+              Your HB+ Fit account
             </Text>
             <Text style={styles.description}>
-              You’re signed in with your verified CUTM account.
+              You’re signed in with a verified university account.
             </Text>
 
-            <View style={styles.profileCard}>
-              {profile?.photoURL ? (
-                <Image
-                  source={{ uri: profile.photoURL }}
-                  style={styles.avatar}
-                  accessibilityLabel={`${name}'s profile picture`}
-                />
-              ) : (
-                <View style={[styles.avatar, styles.avatarFallback]} accessible={false}>
-                  <Text style={styles.avatarInitial}>{initial}</Text>
-                </View>
-              )}
+            <View style={styles.card}>
+              <Text style={styles.cardLabel}>YOUR DETAILS</Text>
+              <View style={styles.profileRow}>
+                {profile?.photoURL ? (
+                  <Image
+                    source={{ uri: profile.photoURL }}
+                    style={styles.avatar}
+                    accessibilityLabel={`${name}'s profile picture`}
+                  />
+                ) : (
+                  <View style={[styles.avatar, styles.avatarFallback]} accessible={false}>
+                    <Text style={styles.avatarInitial}>{initial}</Text>
+                  </View>
+                )}
 
-              <View style={styles.profileDetails}>
-                <Text style={styles.profileName}>{name}</Text>
-                <Text style={styles.email}>{profile?.email}</Text>
-                <View style={styles.verifiedBadge}>
-                  <View style={styles.verifiedDot} />
-                  <Text style={styles.verifiedText}>Verified CUTM account</Text>
+                <View style={styles.profileDetails}>
+                  <Text style={styles.profileName}>{name}</Text>
+                  <Text style={styles.email} selectable>{profile?.email}</Text>
+                  <View style={[styles.roleBadge, isAdmin && styles.adminBadge]}>
+                    <Text style={[styles.roleText, isAdmin && styles.adminRoleText]}>
+                      {isAdmin ? 'Admin' : 'Member'}
+                    </Text>
+                  </View>
                 </View>
-                <Text style={styles.roleLabel}>
-                  Role: {profile?.role === 'admin' ? 'Admin' : 'User'}
-                </Text>
-                {profile?.role === 'admin' ? (
-                  <Pressable
-                    onPress={() => router.push('/admin')}
-                    style={styles.adminLink}
-                    accessibilityRole="button"
-                    accessibilityLabel="Open admin team directory"
-                  >
-                    <Text style={styles.adminLinkText}>Open team directory</Text>
-                  </Pressable>
-                ) : null}
               </View>
+
+              <View style={styles.rule} />
+              <View style={styles.accountStatus}>
+                <View style={styles.statusMark} />
+                <Text style={styles.statusText}>Verified university account</Text>
+              </View>
+
+              {isAdmin ? (
+                <Pressable
+                  onPress={() => router.push('/admin')}
+                  style={styles.adminLink}
+                  accessibilityRole="button"
+                  accessibilityLabel="Open the team directory"
+                >
+                  <Text style={styles.adminLinkText}>Open team directory</Text>
+                  <Text style={styles.adminLinkArrow} accessible={false}>→</Text>
+                </Pressable>
+              ) : null}
             </View>
 
             {error ? (
-              <View
-                style={styles.errorBox}
-                accessibilityRole="alert"
-                accessibilityLiveRegion="polite"
-              >
+              <View style={styles.errorBox} accessibilityRole="alert" accessibilityLiveRegion="polite">
                 <Text style={styles.errorText}>{error}</Text>
               </View>
             ) : null}
           </View>
-
-          <Text style={styles.footer}>A secure space for the HB+ team.</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -108,224 +106,39 @@ export default function DashboardScreen() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: Colors.surface,
-  },
-  content: {
-    flexGrow: 1,
-    paddingHorizontal: Spacing.sm,
-    paddingBottom: Spacing.sm,
-  },
-  container: {
-    width: '100%',
-    maxWidth: 960,
-    alignSelf: 'center',
-    flex: 1,
-  },
-  nav: {
-    minHeight: 78,
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5DED4',
-    gap: 12,
-  },
-  brandRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    flexShrink: 1,
-  },
-  brandMark: {
-    width: 42,
-    height: 42,
-    borderRadius: Rounded.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.primary,
-  },
-  brandMarkText: {
-    fontFamily: Fonts.serifBold,
-    fontSize: 18,
-    color: Colors.neutral,
-  },
-  brandName: {
-    fontFamily: Fonts.sansBold,
-    fontSize: 12,
-    letterSpacing: 0.9,
-    color: Colors.onSurface,
-  },
-  brandCaption: {
-    fontFamily: Fonts.sansMedium,
-    fontSize: 10,
-    letterSpacing: 1.2,
-    color: Colors.primary,
-    marginTop: 3,
-  },
-  logoutButton: {
-    minWidth: 84,
-    minHeight: 42,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 14,
-    borderRadius: Rounded.md,
-    borderWidth: 1,
-    borderColor: '#D8C6BC',
-    backgroundColor: Colors.neutral,
-  },
-  logoutPressed: {
-    backgroundColor: '#F8F1ED',
-  },
-  logoutBusy: {
-    backgroundColor: '#F8F6F2',
-  },
-  logoutText: {
-    fontFamily: Fonts.sansSemiBold,
-    fontSize: 13,
-    color: Colors.primary,
-  },
-  main: {
-    width: '100%',
-    maxWidth: 680,
-    alignSelf: 'center',
-    paddingTop: 56,
-  },
-  eyebrow: {
-    fontFamily: Fonts.sansBold,
-    fontSize: 11,
-    letterSpacing: 1.3,
-    color: Colors.primary,
-  },
-  heading: {
-    fontFamily: Fonts.serifBold,
-    fontSize: 38,
-    lineHeight: 46,
-    color: Colors.onSurface,
-    marginTop: 10,
-  },
-  description: {
-    fontFamily: Fonts.sansRegular,
-    fontSize: 15,
-    lineHeight: 23,
-    color: '#66615B',
-    marginTop: 8,
-    marginBottom: 28,
-  },
-  profileCard: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 20,
-    padding: 24,
-    borderRadius: Rounded.xl,
-    borderWidth: 1,
-    borderColor: '#EAE5DC',
-    backgroundColor: Colors.neutral,
-    shadowColor: '#352318',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.06,
-    shadowRadius: 22,
-    elevation: 2,
-  },
-  avatar: {
-    width: 76,
-    height: 76,
-    borderRadius: Rounded.full,
-    backgroundColor: '#EFE8DF',
-    flexShrink: 0,
-  },
-  avatarFallback: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.primary80,
-  },
-  avatarInitial: {
-    fontFamily: Fonts.serifBold,
-    fontSize: 30,
-    color: Colors.neutral,
-  },
-  profileDetails: {
-    flex: 1,
-    minWidth: 0,
-  },
-  profileName: {
-    fontFamily: Fonts.sansSemiBold,
-    fontSize: 18,
-    lineHeight: 24,
-    color: Colors.onSurface,
-  },
-  email: {
-    fontFamily: Fonts.sansRegular,
-    fontSize: 14,
-    lineHeight: 20,
-    color: '#625B54',
-    marginTop: 3,
-    flexShrink: 1,
-  },
-  verifiedBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    gap: 7,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    marginTop: 12,
-    borderRadius: Rounded.full,
-    backgroundColor: '#F1F6F0',
-  },
-  verifiedDot: {
-    width: 7,
-    height: 7,
-    borderRadius: Rounded.full,
-    backgroundColor: '#45834A',
-  },
-  verifiedText: {
-    fontFamily: Fonts.sansMedium,
-    fontSize: 11,
-    color: '#35663A',
-  },
-  roleLabel: {
-    fontFamily: Fonts.sansMedium,
-    fontSize: 12,
-    color: '#625B54',
-    marginTop: 10,
-  },
-  adminLink: {
-    minHeight: 42,
-    alignSelf: 'flex-start',
-    justifyContent: 'center',
-    marginTop: 8,
-    paddingHorizontal: 2,
-  },
-  adminLinkText: {
-    fontFamily: Fonts.sansSemiBold,
-    fontSize: 13,
-    color: Colors.primary,
-    textDecorationLine: 'underline',
-  },
-  errorBox: {
-    padding: 14,
-    marginTop: 16,
-    borderRadius: Rounded.md,
-    borderWidth: 1,
-    borderColor: '#F0C8BF',
-    backgroundColor: '#FFF6F3',
-  },
-  errorText: {
-    fontFamily: Fonts.sansRegular,
-    fontSize: 13,
-    lineHeight: 19,
-    color: '#73382F',
-  },
-  footer: {
-    fontFamily: Fonts.sansRegular,
-    fontSize: 12,
-    color: '#77716A',
-    textAlign: 'center',
-    marginTop: 'auto',
-    paddingTop: 36,
-  },
+  safeArea: { flex: 1, backgroundColor: Colors.surface },
+  content: { flexGrow: 1, paddingHorizontal: Spacing.sm, paddingBottom: Spacing.sm },
+  container: { width: '100%', maxWidth: 1040, alignSelf: 'center', flex: 1 },
+  nav: { minHeight: 76, width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#E5DED4', gap: 12 },
+  signOutButton: { minWidth: 88, minHeight: 44, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 14, borderRadius: Rounded.md, borderWidth: 1, borderColor: '#D8C6BC', backgroundColor: 'transparent' },
+  signOutPressed: { backgroundColor: '#F8F1ED' },
+  signOutBusy: { backgroundColor: Colors.neutral },
+  signOutText: { fontFamily: Fonts.sansSemiBold, fontSize: 13, color: Colors.primary },
+  main: { width: '100%', maxWidth: 720, alignSelf: 'center', paddingTop: Spacing.lg },
+  eyebrow: { fontFamily: Fonts.sansBold, fontSize: 11, letterSpacing: 1.2, color: Colors.primary },
+  heading: { marginTop: 10, fontFamily: Fonts.serifBold, fontSize: 35, lineHeight: 42, letterSpacing: -0.28, color: Colors.onSurface },
+  narrowHeading: { fontSize: 30, lineHeight: 38 },
+  description: { marginTop: 8, marginBottom: 28, fontFamily: Fonts.sansRegular, fontSize: 16, lineHeight: 24, color: '#625B54' },
+  card: { padding: 24, borderRadius: Rounded.lg, borderWidth: 1, borderColor: '#E5DED4', backgroundColor: Colors.neutral },
+  cardLabel: { marginBottom: 20, fontFamily: Fonts.sansBold, fontSize: 11, letterSpacing: 1.1, color: '#77716A' },
+  profileRow: { flexDirection: 'row', alignItems: 'center', gap: 18 },
+  avatar: { width: 64, height: 64, borderRadius: Rounded.full, backgroundColor: '#EFE8DF', flexShrink: 0 },
+  avatarFallback: { alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.primary90 },
+  avatarInitial: { fontFamily: Fonts.serifBold, fontSize: 26, color: Colors.primary },
+  profileDetails: { flex: 1, minWidth: 0 },
+  profileName: { fontFamily: Fonts.sansSemiBold, fontSize: 17, lineHeight: 24, color: Colors.onSurface },
+  email: { marginTop: 2, fontFamily: Fonts.sansRegular, fontSize: 14, lineHeight: 21, color: '#625B54' },
+  roleBadge: { alignSelf: 'flex-start', marginTop: 10, paddingVertical: 5, paddingHorizontal: 10, borderRadius: Rounded.full, backgroundColor: Colors.surface },
+  adminBadge: { backgroundColor: '#F8EEE9' },
+  roleText: { fontFamily: Fonts.sansMedium, fontSize: 11, color: '#5D554D' },
+  adminRoleText: { color: Colors.primary },
+  rule: { height: 1, backgroundColor: '#EEEAE3', marginTop: 22, marginBottom: 16 },
+  accountStatus: { flexDirection: 'row', alignItems: 'center', gap: 9 },
+  statusMark: { width: 8, height: 8, borderRadius: Rounded.full, backgroundColor: Colors.primary },
+  statusText: { fontFamily: Fonts.sansRegular, fontSize: 13, lineHeight: 20, color: '#625B54' },
+  adminLink: { minHeight: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 20, paddingHorizontal: 16, borderRadius: Rounded.md, borderWidth: 1, borderColor: '#D8C6BC', backgroundColor: Colors.neutral },
+  adminLinkText: { fontFamily: Fonts.sansSemiBold, fontSize: 14, color: Colors.primary },
+  adminLinkArrow: { fontSize: 18, color: Colors.primary },
+  errorBox: { padding: 14, marginTop: 16, borderRadius: Rounded.md, borderWidth: 1, borderColor: '#F0C8BF', backgroundColor: '#FFF6F3' },
+  errorText: { fontFamily: Fonts.sansRegular, fontSize: 13, lineHeight: 19, color: '#73382F' },
 });

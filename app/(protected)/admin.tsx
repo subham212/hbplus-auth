@@ -10,6 +10,7 @@ import {
 import { Redirect, router } from 'expo-router';
 import type { QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import BrandLockup from '../../components/BrandLockup';
 import { Colors, Fonts, Rounded, Spacing } from '../../constants/theme';
 import { useAuth } from '../../contexts/AuthContext';
 import { getUserProfilePage, type UserProfile } from '../../services/userProfiles';
@@ -80,14 +81,7 @@ export default function AdminScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <Pressable
-              onPress={() => router.replace('/dashboard')}
-              accessibilityRole="button"
-              accessibilityLabel="Return to dashboard"
-              style={styles.backButton}
-            >
-              <Text style={styles.backText}>← Dashboard</Text>
-            </Pressable>
+            <BrandLockup compact caption="ADMINISTRATION" />
             <Pressable
               onPress={signOut}
               disabled={isSigningOut}
@@ -100,10 +94,19 @@ export default function AdminScreen() {
             </Pressable>
           </View>
 
-          <Text style={styles.eyebrow}>ADMINISTRATION</Text>
+          <Pressable
+            onPress={() => router.replace('/dashboard')}
+            accessibilityRole="button"
+            accessibilityLabel="Return to account overview"
+            style={styles.backButton}
+          >
+            <Text style={styles.backText}>← Account overview</Text>
+          </Pressable>
+
+          <Text style={styles.eyebrow}>MEMBER ACCOUNTS</Text>
           <Text style={styles.heading} accessibilityRole="header">Team directory</Text>
           <Text style={styles.description}>
-            View the saved profiles for verified CUTM users.
+            Accounts currently registered for this preview.
           </Text>
           {authError ? <Text style={styles.inlineError} accessibilityRole="alert">{authError}</Text> : null}
 
@@ -153,7 +156,7 @@ export default function AdminScreen() {
               ) : null}
             </View>
           )}
-          <Text style={styles.footer}>Profile roles are managed by the Firebase project owner.</Text>
+          <Text style={styles.footer}>Account roles are managed by the project owner.</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -164,13 +167,13 @@ const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: Colors.surface },
   content: { flexGrow: 1, padding: Spacing.sm },
   container: { width: '100%', maxWidth: 880, alignSelf: 'center', flex: 1 },
-  header: { minHeight: 58, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: '#E5DED4', marginBottom: 40 },
-  backButton: { minHeight: 44, justifyContent: 'center', paddingHorizontal: 4 },
+  header: { minHeight: 76, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: '#E5DED4', marginBottom: 20, gap: 12 },
+  backButton: { minHeight: 44, alignSelf: 'flex-start', justifyContent: 'center', paddingHorizontal: 2, marginBottom: 16 },
   backText: { fontFamily: Fonts.sansSemiBold, fontSize: 14, color: Colors.primary },
   signOutButton: { minWidth: 84, minHeight: 42, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 14, borderRadius: Rounded.md, borderWidth: 1, borderColor: '#D8C6BC', backgroundColor: Colors.neutral },
   signOutText: { fontFamily: Fonts.sansSemiBold, fontSize: 13, color: Colors.primary },
   eyebrow: { fontFamily: Fonts.sansBold, fontSize: 11, letterSpacing: 1.3, color: Colors.primary },
-  heading: { fontFamily: Fonts.serifBold, fontSize: 36, lineHeight: 44, color: Colors.onSurface, marginTop: 8 },
+  heading: { fontFamily: Fonts.serifBold, fontSize: 35, lineHeight: 42, letterSpacing: -0.28, color: Colors.onSurface, marginTop: 8 },
   description: { fontFamily: Fonts.sansRegular, fontSize: 14, lineHeight: 22, color: '#66615B', marginTop: 6, marginBottom: 24 },
   list: { borderWidth: 1, borderColor: '#EAE5DC', borderRadius: Rounded.xl, backgroundColor: Colors.neutral, overflow: 'hidden' },
   memberRow: { minHeight: 76, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12, paddingHorizontal: 20, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: '#EEEAE3' },
@@ -188,5 +191,5 @@ const styles = StyleSheet.create({
   inlineError: { padding: 16, fontFamily: Fonts.sansRegular, fontSize: 13, color: Colors.error },
   moreButton: { minHeight: 48, alignItems: 'center', justifyContent: 'center', margin: 12, borderWidth: 1, borderColor: '#D8C6BC', borderRadius: Rounded.md },
   moreText: { fontFamily: Fonts.sansSemiBold, fontSize: 13, color: Colors.primary },
-  footer: { fontFamily: Fonts.sansRegular, fontSize: 12, lineHeight: 18, color: '#77716A', textAlign: 'center', marginTop: 'auto', paddingTop: 36 },
+  footer: { fontFamily: Fonts.sansRegular, fontSize: 12, lineHeight: 18, color: '#77716A', textAlign: 'center', paddingTop: 24 },
 });

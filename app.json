@@ -1,12 +1,17 @@
 {
   "expo": {
-    "name": "HB+ Auth",
+    "name": "HB+ Fit",
     "slug": "hbplus-auth",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "scheme": "hbplus-auth",
+    "splash": {
+      "image": "./assets/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F7F3EA"
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "fit.hbplus.auth"
@@ -21,7 +26,7 @@
       "package": "fit.hbplus.auth"
     },
     "web": {
-      "favicon": "./assets/favicon.png",
+      "favicon": "./assets/logo.png",
       "bundler": "metro",
       "output": "single"
     },

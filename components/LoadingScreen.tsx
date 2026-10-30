@@ -1,11 +1,13 @@
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import BrandLockup from './BrandLockup';
 import { Colors, Fonts } from '../constants/theme';
 
-export default function LoadingScreen({ message = 'Loading your workspace…' }: { message?: string }) {
+export default function LoadingScreen({ message = 'Restoring your session…' }: { message?: string }) {
   return (
     <View style={styles.container}>
+      <BrandLockup compact />
       <ActivityIndicator
-        size="large"
+        size="small"
         color={Colors.primary}
         accessibilityLabel={message}
       />
@@ -23,7 +25,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 14,
+    gap: 18,
     padding: 24,
   },
   message: {

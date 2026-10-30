@@ -1,11 +1,17 @@
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import BrandLockup from '../components/BrandLockup';
 import { useAuth } from '../contexts/AuthContext';
-import { Colors, Fonts, Rounded, Spacing } from '../constants/theme';
+import { Colors, Fonts, Rounded } from '../constants/theme';
 
 export default function LoginScreen() {
+  const { width } = useWindowDimensions();
+  const isWide = width >= 900;
+  const isNarrow = width < 480;
+  const isTiny = width < 360;
+  const shellWidth = Math.max(0, Math.min(width - 40, isWide ? 1120 : 440));
   const { status, error, isSigningIn, signInWithGoogle } = useAuth();
   const isBusy = status === 'loading' || isSigningIn;
   const loadingLabel = status === 'loading' ? 'Checking your session…' : 'Connecting to Google…';
@@ -16,32 +22,25 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
-      >
-        <View style={styles.shell}>
-          <View style={styles.brandRow}>
-            <View style={styles.brandMark}>
-              <Text style={styles.brandMarkText}>HB+</Text>
-            </View>
-            <View>
-              <Text style={styles.brandName}>HB+ WORKSPACE</Text>
-              <Text style={styles.brandCaption}>TEAM ACCESS</Text>
+      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+        <View style={[styles.shell, { width: shellWidth }, isWide && styles.wideShell]}>
+          <View style={[styles.intro, isWide && styles.wideIntro]}>
+            <BrandLockup caption="" />
+            <View style={[styles.introCopy, isWide && styles.wideIntroCopy]}>
+              <Text style={[styles.eyebrow, isWide && styles.wideEyebrow]}>MEMBER SIGN-IN</Text>
+              <Text style={[styles.heading, isWide && styles.wideHeading, isNarrow && styles.narrowHeading, isTiny && styles.tinyHeading]} accessibilityRole="header">
+                Wellbeing, with thoughtful support.
+              </Text>
+              <Text style={[styles.introDescription, isWide && styles.wideIntroDescription]}>
+                Sign in to continue to your HB+ Fit account.
+              </Text>
             </View>
           </View>
 
-          <View style={styles.card}>
-            <View style={styles.eyebrow}>
-              <View style={styles.eyebrowDot} />
-              <Text style={styles.eyebrowText}>OFFICIAL ACCOUNT REQUIRED</Text>
-            </View>
-
-            <Text style={styles.heading} accessibilityRole="header">
-              Welcome to your workspace.
-            </Text>
-            <Text style={styles.description}>
-              Sign in with your CUTM university account to continue securely.
+          <View style={[styles.card, isNarrow && styles.narrowCard]}>
+            <Text style={styles.cardHeading} accessibilityRole="header">Sign in</Text>
+            <Text style={styles.cardDescription}>
+              Continue with your verified university Google account.
             </Text>
 
             <Pressable
@@ -59,36 +58,30 @@ export default function LoginScreen() {
               {isBusy ? (
                 <>
                   <ActivityIndicator size="small" color={Colors.primary} />
-                  <Text style={styles.buttonTextBusy}>{loadingLabel}</Text>
+                  <Text style={styles.buttonBusyText}>{loadingLabel}</Text>
                 </>
               ) : (
                 <>
-                  <View style={styles.googleMark} accessible={false}>
-                    <Text style={styles.googleMarkText}>G</Text>
-                  </View>
+                  <Text style={styles.googleMark} accessible={false}>G</Text>
                   <Text style={styles.buttonText}>Continue with Google</Text>
                 </>
               )}
             </Pressable>
 
             {error ? (
-              <View
-                style={styles.errorBox}
-                accessibilityRole="alert"
-                accessibilityLiveRegion="polite"
-              >
+              <View style={styles.errorBox} accessibilityRole="alert" accessibilityLiveRegion="polite">
                 <Text style={styles.errorTitle}>Sign-in issue</Text>
                 <Text style={styles.errorText}>{error}</Text>
               </View>
             ) : null}
 
-            <View style={styles.divider} />
-            <Text style={styles.cardFootnote}>
-              Access is limited to verified @cutm.ac.in accounts.
-            </Text>
+            <View style={styles.accessNote}>
+              <View style={styles.noteRule} />
+              <Text style={styles.noteText}>
+                Preview access is limited to verified @cutm.ac.in accounts.
+              </Text>
+            </View>
           </View>
-
-          <Text style={styles.footer}>A secure space for the HB+ team.</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -96,177 +89,36 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: Colors.surface,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    padding: Spacing.sm,
-  },
-  shell: {
-    width: '100%',
-    maxWidth: 460,
-    alignSelf: 'center',
-  },
-  brandRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    marginBottom: 28,
-  },
-  brandMark: {
-    width: 48,
-    height: 48,
-    borderRadius: Rounded.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.primary,
-  },
-  brandMarkText: {
-    fontFamily: Fonts.serifBold,
-    fontSize: 20,
-    color: Colors.neutral,
-  },
-  brandName: {
-    fontFamily: Fonts.sansBold,
-    fontSize: 13,
-    letterSpacing: 1.1,
-    color: Colors.onSurface,
-  },
-  brandCaption: {
-    fontFamily: Fonts.sansMedium,
-    fontSize: 11,
-    letterSpacing: 1.4,
-    color: Colors.primary,
-    marginTop: 3,
-  },
-  card: {
-    width: '100%',
-    padding: 32,
-    borderRadius: Rounded.xl,
-    backgroundColor: Colors.neutral,
-    borderWidth: 1,
-    borderColor: '#EAE5DC',
-    shadowColor: '#352318',
-    shadowOffset: { width: 0, height: 16 },
-    shadowOpacity: 0.08,
-    shadowRadius: 28,
-    elevation: 3,
-  },
-  eyebrow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    gap: 8,
-    marginBottom: 20,
-  },
-  eyebrowDot: {
-    width: 7,
-    height: 7,
-    borderRadius: Rounded.full,
-    backgroundColor: Colors.primary,
-  },
-  eyebrowText: {
-    fontFamily: Fonts.sansBold,
-    fontSize: 10,
-    letterSpacing: 1.1,
-    color: Colors.primary,
-  },
-  heading: {
-    fontFamily: Fonts.serifBold,
-    fontSize: 36,
-    lineHeight: 43,
-    letterSpacing: -0.4,
-    color: Colors.onSurface,
-  },
-  description: {
-    fontFamily: Fonts.sansRegular,
-    fontSize: 15,
-    lineHeight: 23,
-    color: '#66615B',
-    marginTop: 12,
-    marginBottom: 28,
-  },
-  button: {
-    minHeight: 58,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 12,
-    paddingHorizontal: 16,
-    borderRadius: Rounded.md,
-    borderWidth: 1,
-    borderColor: '#D9D4CC',
-    backgroundColor: Colors.neutral,
-  },
-  buttonPressed: {
-    backgroundColor: '#F8F6F2',
-  },
-  buttonBusy: {
-    backgroundColor: '#F8F6F2',
-  },
-  googleMark: {
-    width: 22,
-    height: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  googleMarkText: {
-    fontFamily: Fonts.sansBold,
-    fontSize: 19,
-    color: '#4285F4',
-  },
-  buttonText: {
-    fontFamily: Fonts.sansSemiBold,
-    fontSize: 15,
-    color: Colors.onSurface,
-  },
-  buttonTextBusy: {
-    fontFamily: Fonts.sansMedium,
-    fontSize: 14,
-    color: '#5D554D',
-  },
-  errorBox: {
-    padding: 14,
-    marginTop: 16,
-    borderRadius: Rounded.md,
-    borderWidth: 1,
-    borderColor: '#F0C8BF',
-    backgroundColor: '#FFF6F3',
-  },
-  errorTitle: {
-    fontFamily: Fonts.sansSemiBold,
-    fontSize: 13,
-    color: Colors.error,
-    marginBottom: 3,
-  },
-  errorText: {
-    fontFamily: Fonts.sansRegular,
-    fontSize: 13,
-    lineHeight: 19,
-    color: '#73382F',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#EEEAE3',
-    marginTop: 24,
-    marginBottom: 16,
-  },
-  cardFootnote: {
-    fontFamily: Fonts.sansRegular,
-    fontSize: 12,
-    lineHeight: 18,
-    color: '#77716A',
-    textAlign: 'center',
-  },
-  footer: {
-    fontFamily: Fonts.sansRegular,
-    fontSize: 12,
-    color: '#77716A',
-    textAlign: 'center',
-    marginTop: 24,
-  },
+  safeArea: { flex: 1, backgroundColor: Colors.surface },
+  scrollContent: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: 20, paddingVertical: 30 },
+  shell: { alignSelf: 'center', gap: 30 },
+  wideShell: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 50 },
+  intro: { width: '100%', alignItems: 'center' },
+  wideIntro: { flex: 1, maxWidth: 500, alignItems: 'flex-start' },
+  introCopy: { width: '100%', alignItems: 'center', marginTop: 30 },
+  wideIntroCopy: { alignItems: 'flex-start', marginTop: 50 },
+  eyebrow: { width: '100%', fontFamily: Fonts.sansBold, fontSize: 11, letterSpacing: 1.2, color: Colors.primary, textAlign: 'center' },
+  wideEyebrow: { textAlign: 'left' },
+  heading: { width: '100%', maxWidth: 500, marginTop: 14, fontFamily: Fonts.serifBold, fontSize: 42, lineHeight: 50, letterSpacing: -0.35, color: Colors.onSurface, textAlign: 'center' },
+  wideHeading: { fontSize: 51, lineHeight: 61, textAlign: 'left' },
+  narrowHeading: { fontSize: 36, lineHeight: 43 },
+  tinyHeading: { fontSize: 32, lineHeight: 39 },
+  introDescription: { width: '100%', maxWidth: 390, marginTop: 12, fontFamily: Fonts.sansRegular, fontSize: 16, lineHeight: 24, color: '#625B54', textAlign: 'center' },
+  wideIntroDescription: { textAlign: 'left' },
+  card: { width: '100%', maxWidth: 420, alignSelf: 'center', padding: 30, borderRadius: Rounded.lg, borderWidth: 1, borderColor: '#E5DED4', backgroundColor: Colors.neutral },
+  narrowCard: { padding: 20 },
+  cardHeading: { fontFamily: Fonts.sansMedium, fontSize: 24, lineHeight: 39, color: Colors.onSurface },
+  cardDescription: { marginTop: 7, marginBottom: 20, fontFamily: Fonts.sansRegular, fontSize: 14, lineHeight: 21, color: '#625B54' },
+  button: { width: '100%', minHeight: 58, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, paddingHorizontal: 16, borderRadius: Rounded.md, borderWidth: 1, borderColor: '#D8C6BC', backgroundColor: Colors.neutral },
+  buttonPressed: { backgroundColor: '#F8F1ED' },
+  buttonBusy: { backgroundColor: '#FAF8F5' },
+  googleMark: { fontFamily: Fonts.sansBold, fontSize: 20, color: '#4285F4' },
+  buttonText: { fontFamily: Fonts.sansSemiBold, fontSize: 15, color: Colors.onSurface },
+  buttonBusyText: { fontFamily: Fonts.sansMedium, fontSize: 14, color: '#5D554D' },
+  errorBox: { padding: 14, marginTop: 16, borderRadius: Rounded.md, borderWidth: 1, borderColor: '#F0C8BF', backgroundColor: '#FFF6F3' },
+  errorTitle: { fontFamily: Fonts.sansSemiBold, fontSize: 13, color: Colors.error, marginBottom: 3 },
+  errorText: { fontFamily: Fonts.sansRegular, fontSize: 13, lineHeight: 19, color: '#73382F' },
+  accessNote: { alignItems: 'center', marginTop: 20 },
+  noteRule: { width: '100%', height: 1, backgroundColor: '#EEEAE3', marginBottom: 14 },
+  noteText: { width: '100%', fontFamily: Fonts.sansRegular, fontSize: 12, lineHeight: 18, color: '#77716A', textAlign: 'center' },
 });
